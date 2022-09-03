@@ -11,6 +11,10 @@ public class Main {
      * @param args program arguments, currently ignored
      */
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        var testAddUpVariants = new TestAddUpVariants();
+        System.out.println(testAddUpVariants.testAddUpWithAssertsRegularCalls());
+        System.out.println(testAddUpVariants.testAddUpWithAssertsExceptionalCalls());
+        System.out.println(testAddUpVariants.testAddUpWithRuntimeExceptionsRegularCalls());
+        System.out.println(testAddUpVariants.testAddUpWithRuntimeExceptionsExceptionalCalls());
     }
 }
