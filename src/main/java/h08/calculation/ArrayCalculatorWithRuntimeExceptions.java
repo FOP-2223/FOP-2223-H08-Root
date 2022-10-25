@@ -22,7 +22,7 @@ public class ArrayCalculatorWithRuntimeExceptions implements ArrayCalculator {
         // 2
         for (int i = 0; i < theArray.length; i++) {
             if (theArray[i] == null) {
-                throw new NullPointerException("Secondary array at #" + i + " is void!");
+                throw new NullPointerException("Secondary array at " + i + " is void!");
             }
         }
 
@@ -39,7 +39,7 @@ public class ArrayCalculatorWithRuntimeExceptions implements ArrayCalculator {
                 double value = secondaryArray[j];
 
                 if (value < 0 || value > max) {
-                    throw new ArithmeticException("Value at (#" + i + ",#" + j + ") is not in range!");
+                    throw new ArithmeticException("Value at (" + i + "," + j + ") is not in range!");
                 }
             }
         }
