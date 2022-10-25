@@ -44,4 +44,21 @@ public class TutorTests_H1_2 {
         assertEquals(String.format("Secondary array at %s is void!", expectedIndex), actualMessage,
             "Die Botschaft der geworfenen Exception ist nicht korrekt.");
     }
+
+    // DONE
+    @ParameterizedTest
+    @DisplayName("Methode \"addUp\" wirft eine ArithmeticException, wenn max negativ ist.")
+    @JsonClasspathSource("TutorTests_H1_2-addUpHandlesNegativeMaxCorrectly.json")
+    public void addUpHandlesNegativeMaxCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode, @Property("max"
+    ) double max) {
+        var converter = new ArrayNodeConverter(testArrayNode);
+        var testArray = converter.convert();
+
+        var sut = new ArrayCalculatorWithRuntimeExceptions();
+        var thrownException = assertThrowsExactly(ArithmeticException.class, () -> sut.addUp(testArray, max),
+            "Die Methode addUp wirft keine ArithmeticException.");
+        var actualMessage = thrownException.getMessage();
+        assertEquals("Upper bound is negative!", actualMessage,
+            "Die Botschaft der geworfenen Exception ist nicht korrekt.");
+    }
 }
