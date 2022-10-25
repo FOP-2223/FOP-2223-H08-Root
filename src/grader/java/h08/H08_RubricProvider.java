@@ -2,7 +2,6 @@ package h08;
 
 import org.sourcegrade.jagr.api.rubric.*;
 
-@RubricForSubmission("h08")
 public class H08_RubricProvider implements RubricProvider {
     public static final Criterion H1_1_T1 = Criterion.builder()
 //        .shortDescription("Klasse RobotWithOffspring ist korrekt deklariert.")
