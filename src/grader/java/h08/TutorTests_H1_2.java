@@ -65,7 +65,7 @@ public class TutorTests_H1_2 {
     @ParameterizedTest
     @DisplayName("Methode \"addUp\" wirft eine ArithmeticException, wenn max negativ ist.")
     @JsonClasspathSource("TutorTests_H1_2-addUpHandlesNegativeMaxCorrectly.json")
-    public void addUpHandlesNegativeMaxCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode, @Property("max"
+    public void addUpHandlesNegativeMaxCorrectly2(@Property("testArray") @NotNull ArrayNode testArrayNode, @Property("max"
     ) double max) {
         var converter = new ArrayNodeConverter(testArrayNode);
         var testArray = converter.convert();
