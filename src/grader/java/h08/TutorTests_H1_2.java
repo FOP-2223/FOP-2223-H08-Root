@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import h08.calculation.ArrayCalculatorWithRuntimeExceptions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
@@ -62,11 +63,13 @@ public class TutorTests_H1_2 {
             "Die Botschaft der geworfenen Exception ist nicht korrekt.");
     }
 
+    // DONE
     @ParameterizedTest
-    @DisplayName("Methode \"addUp\" wirft eine ArithmeticException, wenn max negativ ist.")
-    @JsonClasspathSource("TutorTests_H1_2-addUpHandlesNegativeMaxCorrectly.json")
-    public void addUpHandlesNegativeMaxCorrectly2(@Property("testArray") @NotNull ArrayNode testArrayNode, @Property("max"
-    ) double max) {
+    @DisplayName("Methode \"addUp\" wirft eine ArithmeticException, wenn eine Komponente negativ oder größer als max ist.")
+    @JsonClasspathSource("TutorTests_H1_2-addUpHandlesValuesOutOfRangeCorrectly.json")
+    public void addUpHandlesValuesOutOfRangeCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode,
+                                                      @Property("expectedIndexPair") @NotNull ExpectedIndexPair expectedIndexPair,
+                                                      @Property("max") double max) {
         var converter = new ArrayNodeConverter(testArrayNode);
         var testArray = converter.convert();
 
@@ -74,7 +77,12 @@ public class TutorTests_H1_2 {
         var thrownException = assertThrowsExactly(ArithmeticException.class, () -> sut.addUp(testArray, max),
             "Die Methode addUp wirft keine ArithmeticException.");
         var actualMessage = thrownException.getMessage();
-        assertEquals("Upper bound is negative!", actualMessage,
-            "Die Botschaft der geworfenen Exception ist nicht korrekt.");
+        assertEquals(String.format("Value at (%s,%s) is not in range!", expectedIndexPair.i(), expectedIndexPair.j()),
+            actualMessage, "Die Botschaft der geworfenen Exception ist nicht korrekt.");
+    }
+
+    @Test
+    public void addUpDoesNotExceedMaximumNumberOfThrowStatements() {
+        // TODO
     }
 }
