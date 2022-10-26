@@ -1,31 +1,18 @@
 package h08;
 
-import org.sourcegrade.jagr.api.rubric.*;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import h08.utils.ChildCollectionCriterionBuilder;
+import h08.utils.OnePointCriterionBuilder;
+import h08.utils.RubricBuilder;
+import org.sourcegrade.jagr.api.rubric.Criterion;
+import org.sourcegrade.jagr.api.rubric.Grader;
+import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
+import org.sourcegrade.jagr.api.rubric.Rubric;
+import org.sourcegrade.jagr.api.rubric.RubricProvider;
 
 public class H08_RubricProvider implements RubricProvider {
-    public static final Criterion H1_1_T1 = Criterion.builder()
-//        .shortDescription("Klasse RobotWithOffspring ist korrekt deklariert.")
-        .grader(
-            Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTests_H1_1.class.getMethod(
-                    "t01")))
-                .pointsPassedMax()
-                .pointsFailedMin()
-                .build())
-        .build();
-
-    public static final Criterion H1_1 = Criterion.builder()
-        .shortDescription("H1.1 | Berechnung der Summe")
-        .addChildCriteria(H1_1_T1)
-        .build();
-
     public static final Criterion H1_2 = Criterion.builder()
         .shortDescription("H1.2 | Prüfen der Ausnahmefälle")
-        .build();
-
-    public static final Criterion H1 = Criterion.builder()
-        .shortDescription("H1 | Methode mit RuntimeExceptions")
-        .addChildCriteria(H1_1, H1_2)
         .build();
 
     public static final Criterion H2_T1 = Criterion.builder()
@@ -86,13 +73,17 @@ public class H08_RubricProvider implements RubricProvider {
         .addChildCriteria(H5_1, H5_2)
         .build();
 
-    public static final Rubric RUBRIC = Rubric.builder()
-        .title("H08 | Excéptions – Gotta catch ’em all!")
-        .addChildCriteria(H1, H2, H3, H4, H5)
-        .build();
-
     @Override
     public Rubric getRubric() {
-        return RUBRIC;
+        var H1_1_T1 = new OnePointCriterionBuilder("Die Methode \"addUp\" berechnet die Summe korrekt.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H1_1.class.getMethod("addUpCalculatesSumCorrectly", ArrayNode.class, double.class)));
+
+        var H1_1 = new ChildCollectionCriterionBuilder("H1.1 | Berechnung der Summe", H1_1_T1);
+
+        var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1);
+
+        var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1);
+        return rubricBuilder.build();
     }
 }
