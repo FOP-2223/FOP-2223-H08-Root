@@ -5,7 +5,7 @@ public class Preconditions {
     }
 
     /**
-     * Throws an {@link ArrayIsNullException} if the given primary array is null.
+     * Throws an {@link ArrayIsNullException} iff the given primary array is null.
      *
      * @param primaryArray The primary array to be validated
      * @throws ArrayIsNullException Thrown when the given primary array is null
