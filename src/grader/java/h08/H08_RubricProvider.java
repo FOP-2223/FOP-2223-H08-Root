@@ -60,19 +60,6 @@ public class H08_RubricProvider implements RubricProvider {
         .addChildCriteria(H4_T1)
         .build();
 
-    public static final Criterion H5_1 = Criterion.builder()
-        .shortDescription("H5.1 | Testen der Summenberechnung")
-        .build();
-
-    public static final Criterion H5_2 = Criterion.builder()
-        .shortDescription("H5.2 | Test der Ausnahmebehandlung")
-        .build();
-
-    public static final Criterion H5 = Criterion.builder()
-        .shortDescription("H5 | Tests mit JUnit")
-        .addChildCriteria(H5_1, H5_2)
-        .build();
-
     @Override
     public Rubric getRubric() {
         var H1_1_T1 = new OnePointCriterionBuilder("Die Methode \"addUp\" berechnet die Summe korrekt.",
@@ -82,6 +69,16 @@ public class H08_RubricProvider implements RubricProvider {
         var H1_1 = new ChildCollectionCriterionBuilder("H1.1 | Berechnung der Summe", H1_1_T1);
 
         var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1);
+
+        var H5_1_T1 = new OnePointCriterionBuilder(
+            "Die Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator die Summe nicht korrekt " +
+                "berechnet.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H5_1.class.getMethod("testSumThrowsExceptionWhenSumNotCorrect")));
+
+        var H5_1 = new ChildCollectionCriterionBuilder("H5.1 | Testen der Summenberechnung", H5_1_T1);
+        //var H5_2 = new ChildCollectionCriterionBuilder("H5.2 | Test der Ausnahmebehandlung", H5_2_T1);
+        var H5 = new ChildCollectionCriterionBuilder("H5 | Tests mit JUnit", H5_1);
 
         var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1);
         return rubricBuilder.build();
