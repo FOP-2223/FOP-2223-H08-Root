@@ -11,13 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-// DONE
 @TestForSubmission
 @DisplayName("H5.1")
 public class TutorTests_H5_1 {
     // DONE
     @Test
-    @DisplayName("Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator die Summe nicht korrekt " +
+    @DisplayName("Methode \"testSum\" wirft einen AssertionError, wenn der ArrayCalculator die Summe nicht korrekt " +
         "berechnet.")
     public void testSumThrowsExceptionWhenSumNotCorrect() throws NoSuchMethodException, IllegalAccessException {
         var testSumMethod = CalculatorTests.class.getDeclaredMethod(
@@ -35,13 +34,13 @@ public class TutorTests_H5_1 {
             }
         }
 
-        assertTrue(assertionThrown, "Die Methode \"testSum\" wirft keinen AssertionFailedError, " +
+        assertTrue(assertionThrown, "Die Methode \"testSum\" wirft keinen AssertionError, " +
             "wenn die Summe durch den ArrayCalculator falsch berechnet wurde.");
     }
 
     // DONE
     @Test
-    @DisplayName("Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator eine Exception wirft.")
+    @DisplayName("Methode \"testSum\" wirft einen AssertionError, wenn der ArrayCalculator eine Exception wirft.")
     public void testSumThrowsExceptionWhenCalculatorThrowsException() throws NoSuchMethodException, IllegalAccessException {
         var testSumMethod = CalculatorTests.class.getDeclaredMethod(
             "testSum", ArrayCalculator.class, double[][].class, double.class, double.class);
@@ -59,18 +58,18 @@ public class TutorTests_H5_1 {
             if (targetException instanceof AssertionError) {
                 assertionThrown = true;
                 assertEquals("Unexpected exception: pinguin", targetException.getMessage(),
-                    "Der von der Methode \"testSum\" geworfene AssertionFailedError " +
+                    "Der von der Methode \"testSum\" geworfene AssertionError " +
                         "hat die falsche Botschaft.");
             }
         }
 
-        assertTrue(assertionThrown, "Die Methode \"testSum\" wirft keinen AssertionFailedError, " +
+        assertTrue(assertionThrown, "Die Methode \"testSum\" wirft keinen AssertionError, " +
             "wenn der ArrayCalculator eine Exception wirft.");
     }
 
     // DONE
     @Test
-    @DisplayName("Methode \"testSum\" wirft keine Exception, wenn der ArrayCalculator die Summe korrekt berechnet.")
+    @DisplayName("Methode \"testSum\" wirft keinen Error, wenn der ArrayCalculator die Summe korrekt berechnet.")
     public void testSumPassesWhenSumCorrect() throws NoSuchMethodException, IllegalAccessException {
         var testSumMethod = CalculatorTests.class.getDeclaredMethod(
             "testSum", ArrayCalculator.class, double[][].class, double.class, double.class);
@@ -86,7 +85,7 @@ public class TutorTests_H5_1 {
             var targetException = e.getTargetException();
             fail(String.format(
                 "Die Methode \"testSum\" wirft bei korrekter Berechnung der Summe eine unerwartete Exception: %s",
-                targetException.getMessage()));
+                targetException.getClass()), targetException);
         }
     }
 }
