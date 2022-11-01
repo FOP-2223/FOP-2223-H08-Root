@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import h08.utils.ChildCollectionCriterionBuilder;
 import h08.utils.OnePointCriterionBuilder;
 import h08.utils.RubricBuilder;
-import org.sourcegrade.jagr.api.rubric.Criterion;
-import org.sourcegrade.jagr.api.rubric.Grader;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
@@ -71,21 +69,35 @@ public class H08_RubricProvider implements RubricProvider {
         var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1);
 
         var H5_1_T1 = new OnePointCriterionBuilder(
-            "Die Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator die Summe nicht korrekt " +
+            "Die Methode \"testSum\" wirft einen AssertionError, wenn der ArrayCalculator die Summe nicht korrekt " +
                 "berechnet.",
             JUnitTestRef.ofMethod(() -> TutorTests_H5_1.class.getMethod("testSumThrowsExceptionWhenSumNotCorrect")));
-
         var H5_1_T2 = new OnePointCriterionBuilder(
-            "Die Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator eine Exception wirft.",
+            "Die Methode \"testSum\" wirft einen AssertionError, wenn der ArrayCalculator eine Exception wirft.",
             JUnitTestRef.ofMethod(() -> TutorTests_H5_1.class.getMethod("testSumThrowsExceptionWhenCalculatorThrowsException")));
-
         var H5_1_T3 = new OnePointCriterionBuilder(
             "Die Methode \"testSum\" wirft keine Exception, wenn der ArrayCalculator die Summe korrekt berechnet.",
             JUnitTestRef.ofMethod(() -> TutorTests_H5_1.class.getMethod("testSumPassesWhenSumCorrect")));
 
         var H5_1 = new ChildCollectionCriterionBuilder("H5.1 | Testen der Summenberechnung", H5_1_T1, H5_1_T2, H5_1_T3);
-        //var H5_2 = new ChildCollectionCriterionBuilder("H5.2 | Test der Ausnahmebehandlung", H5_2_T1);
-        var H5 = new ChildCollectionCriterionBuilder("H5 | Tests mit JUnit", H5_1);
+
+        var H5_2_T1 = new OnePointCriterionBuilder(
+            "Die Methode \"testException\" wirft einen AssertionError, wenn der ArrayCalculator keine Exception wirft oder " +
+                "Datentyp der Exception nicht dem erwarteten entspricht.",
+            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenCalculatorThrowsNoException")),
+            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenExceptionTypeIsWrong")));
+        var H5_2_T2 = new OnePointCriterionBuilder(
+            "Methode \"testException\" wirft einen AssertionError, wenn die Botschaft der von ArrayCalculator geworfenen " +
+                "Exception nicht der erwarteten Botschaft entspricht.",
+            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenMessageIsWrong")));
+        var H5_2_T3 = new OnePointCriterionBuilder(
+            "Methode \"testException\" wirft keinen Error, wenn der ArrayCalculator eine Exception wie erwartet wirft.",
+            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionPassesWhenExceptionIsThrownCorrectly")));
+
+        var H5_2 = new ChildCollectionCriterionBuilder("H5.2 | Test der Ausnahmebehandlung", H5_2_T1, H5_2_T2, H5_2_T3);
+
+        // H5 DONE
+        var H5 = new ChildCollectionCriterionBuilder("H5 | Tests mit JUnit", H5_1, H5_2);
 
         var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1, H5);
         return rubricBuilder.build();
