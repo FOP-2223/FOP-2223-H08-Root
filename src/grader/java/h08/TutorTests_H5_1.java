@@ -46,7 +46,7 @@ public class TutorTests_H5_1 {
         testSumMethod.setAccessible(true);
 
         var sut = new CalculatorTests();
-        var exceptionThrown = new MockException();
+        var exceptionThrown = new Exception("pinguin");
         var mockCalculator = new ArrayCalculatorMockExceptionThrower(exceptionThrown);
 
         var assertionThrown = false;
