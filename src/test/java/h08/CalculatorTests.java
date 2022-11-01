@@ -103,7 +103,6 @@ class CalculatorTests {
      * @param expectedSum The expected sum to be calculated
      */
     private void testSum(ArrayCalculator sut, double[][] array, double max, double expectedSum) {
-        assert false;
         try {
             double actualSum = sut.addUp(array, max);
             assertEquals(expectedSum, actualSum);
