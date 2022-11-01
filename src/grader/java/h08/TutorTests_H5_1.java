@@ -39,8 +39,7 @@ public class TutorTests_H5_1 {
 
     @Test
     @DisplayName("Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator eine Exception wirft.")
-    public void testSumThrowsExceptionWhenCalculatorThrowsException() throws NoSuchMethodException, InvocationTargetException
-        , IllegalAccessException {
+    public void testSumThrowsExceptionWhenCalculatorThrowsException() throws NoSuchMethodException, IllegalAccessException {
         var testSumMethod = CalculatorTests.class.getDeclaredMethod(
             "testSum", ArrayCalculator.class, double[][].class, double.class, double.class);
         testSumMethod.setAccessible(true);
