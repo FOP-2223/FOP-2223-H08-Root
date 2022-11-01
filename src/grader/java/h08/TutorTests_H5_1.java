@@ -7,13 +7,15 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+// DONE
 @TestForSubmission
 @DisplayName("H5.1")
 public class TutorTests_H5_1 {
+    // DONE
     @Test
     @DisplayName("Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator die Summe nicht korrekt " +
         "berechnet.")
@@ -37,6 +39,7 @@ public class TutorTests_H5_1 {
             "wenn die Summe durch den ArrayCalculator falsch berechnet wurde.");
     }
 
+    // DONE
     @Test
     @DisplayName("Methode \"testSum\" wirft einen AssertionFailedError, wenn der ArrayCalculator eine Exception wirft.")
     public void testSumThrowsExceptionWhenCalculatorThrowsException() throws NoSuchMethodException, IllegalAccessException {
@@ -45,8 +48,7 @@ public class TutorTests_H5_1 {
         testSumMethod.setAccessible(true);
 
         var sut = new CalculatorTests();
-        var exceptionThrown = new Exception("pinguin");
-        var mockCalculator = new ArrayCalculatorMockExceptionThrower(exceptionThrown);
+        var mockCalculator = new ArrayCalculatorMockExceptionThrower(new Exception("pinguin"));
 
         var assertionThrown = false;
 
@@ -66,9 +68,10 @@ public class TutorTests_H5_1 {
             "wenn der ArrayCalculator eine Exception wirft.");
     }
 
+    // DONE
     @Test
     @DisplayName("Methode \"testSum\" wirft keine Exception, wenn der ArrayCalculator die Summe korrekt berechnet.")
-    public void testSumPassesWhenSumCorrect() throws NoSuchMethodException {
+    public void testSumPassesWhenSumCorrect() throws NoSuchMethodException, IllegalAccessException {
         var testSumMethod = CalculatorTests.class.getDeclaredMethod(
             "testSum", ArrayCalculator.class, double[][].class, double.class, double.class);
         testSumMethod.setAccessible(true);
@@ -77,7 +80,13 @@ public class TutorTests_H5_1 {
         final var expectedSum = 194;
         var mockCalculator = new ArrayCalculatorMockSumReturner(expectedSum);
 
-        assertDoesNotThrow(() -> testSumMethod.invoke(sut, mockCalculator, new double[0][], 0, expectedSum),
-            "Die Methode \"testSum\" wirft bei korrekter Berechnung der Summe eine unerwartete Exception.");
+        try {
+            testSumMethod.invoke(sut, mockCalculator, new double[0][], 0, expectedSum);
+        } catch (InvocationTargetException e) {
+            var targetException = e.getTargetException();
+            fail(String.format(
+                "Die Methode \"testSum\" wirft bei korrekter Berechnung der Summe eine unerwartete Exception: %s",
+                targetException.getMessage()));
+        }
     }
 }
