@@ -39,7 +39,7 @@ class CalculatorTests {
     void runtimeCalculator_secondaryArrayNull_throwsException() {
         testException(runtimeExceptionCalculator, new double[][] { null }, Integer.MAX_VALUE,
                 NullPointerException.class,
-                "Secondary array at #0 is void!");
+                "Secondary array at 0 is void!");
     }
 
     @Test
@@ -52,7 +52,7 @@ class CalculatorTests {
     void runtimeCalculator_valueNegative_throwsException() {
         testException(runtimeExceptionCalculator, new double[][] { new double[] { -1 } }, Integer.MAX_VALUE,
                 ArithmeticException.class,
-                "Value at (#0,#0) is not in range!");
+                "Value at (0,0) is not in range!");
     }
 
     // Tests for ArrayCalculatorWithPreconditions
