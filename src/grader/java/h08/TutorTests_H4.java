@@ -1,10 +1,15 @@
 package h08;
 
+import h08.transform.MainTransformer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -30,7 +35,10 @@ public class TutorTests_H4 {
     // TODO: replace call to ArrayCalculatorWithPreconditions-constructor, to just test the print-method
     @Test
     @DisplayName("Methode \"print\" gibt bei korrekter Eingabe die Summe aus.")
-    public void addUpCalculatesSumCorrectly() {
+    @ExtendWith(TestCycleResolver.class)
+    public void printOutputsSumForCorrectParameters(@NotNull TestCycle testCycle) {
+        testCycle.getClassLoader().visitClass("h08.Main", new MainTransformer());
+
         Main.print(new double[0][], 0);
 
         assertEquals("Sum: 0.0", outputStreamCaptor.toString().trim(),
