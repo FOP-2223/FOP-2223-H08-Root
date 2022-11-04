@@ -28,6 +28,10 @@ jagr {
         val graderPrivate by creating {
             parent(graderPublic)
             graderName.set("FOP-2223-H08-Private")
+            configureDependencies {
+                implementation("org.junit-pioneer:junit-pioneer:1.7.1")
+                implementation("com.fasterxml.jackson.core:jackson-databind:2.13.3")
+            }
         }
     }
 }
