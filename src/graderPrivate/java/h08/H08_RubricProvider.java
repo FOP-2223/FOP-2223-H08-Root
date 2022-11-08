@@ -10,10 +10,6 @@ import org.sourcegrade.jagr.api.rubric.RubricProvider;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 
 public class H08_RubricProvider implements RubricProvider {
-//    public static final Criterion H1_2 = Criterion.builder()
-//        .shortDescription("H1.2 | Prüfen der Ausnahmefälle")
-//        .build();
-//
 //    public static final Criterion H2_T1 = Criterion.builder()
 ////        .shortDescription("Klasse RobotWithOffspring ist korrekt deklariert.")
 //        .grader(
@@ -51,7 +47,13 @@ public class H08_RubricProvider implements RubricProvider {
 
         var H1_1 = new ChildCollectionCriterionBuilder("H1.1 | Berechnung der Summe", H1_1_T1);
 
-        var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1);
+        var H1_2_T1 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet maximal 4 throw-Anweisungen.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H1_2.class.getMethod("addUpDoesNotExceedMaximumNumberOfThrowStatements", TestCycle.class)));
+
+        var H1_2 = new ChildCollectionCriterionBuilder("H1.2 | Prüfen der Ausnahmefälle", H1_2_T1);
+
+        var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1, H1_2);
 
         var H4_T1 = new OnePointCriterionBuilder("Die Methode \"print\" gibt bei korrekter Eingabe die Summe aus.",
             JUnitTestRef.ofMethod(() ->
