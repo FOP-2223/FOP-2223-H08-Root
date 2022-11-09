@@ -141,17 +141,13 @@ public class TutorTests_H3_1 {
             "Die Methode checkValuesInRange wirft keine AtIndexPairException.");
     }
 
-    // TODO: check this. Integer.Max_Value might not be the best choice. Design dedignated json file for this test and the following tests
+    // DONE
     @ParameterizedTest
     @DisplayName("Methode \"checkValuesInRange\" wirft keine AtIndexPairException, falls keine Komponente negativ oder größer " +
-        "als" +
-        " max ist.")
-    @JsonClasspathSource("TutorTests_H1_1-addUpCalculatesSumCorrectly.json")
-    public void checkValuesInRangeHandlesRegularCaseCorrectly1(@Property("testArray") @NotNull ArrayNode testArrayNode) {
-        checkValuesInRangeHandlesRegularCaseCorrectlyCore(testArrayNode, Integer.MAX_VALUE);
-    }
-
-    private void checkValuesInRangeHandlesRegularCaseCorrectlyCore(@NotNull ArrayNode testArrayNode, double max) {
+        "als max ist.")
+    @JsonClasspathSource("TutorTests_H3_1_checkValuesInRangeHandlesRegularCaseCorrectly.json")
+    public void checkValuesInRangeHandlesRegularCaseCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode,
+                                                              @Property("max") double max) {
         var converter = new ArrayNodeConverter(testArrayNode);
         var testArray = converter.convert();
 
