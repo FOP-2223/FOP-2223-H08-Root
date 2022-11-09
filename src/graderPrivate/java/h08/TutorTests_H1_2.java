@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// DONE
 @TestForSubmission
 @DisplayName("H1.2")
 public class TutorTests_H1_2 {

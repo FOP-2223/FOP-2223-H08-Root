@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+// DONE
 @TestForSubmission
 @DisplayName("H2")
 public class TutorTests_H2 {
@@ -41,6 +42,7 @@ public class TutorTests_H2 {
         assertSame(Exception.class, WrongNumberException.class.getSuperclass());
     }
 
+    // DONE
     @ParameterizedTest
     @ValueSource(doubles = {-4332, -32432, -1, 0, 1, 34.131, -44.112, Double.MIN_VALUE, Double.MAX_VALUE})
     @DisplayName("Konstruktor von \"WrongNumberException\" setzt die Botschaft korrekt.")
@@ -48,12 +50,7 @@ public class TutorTests_H2 {
         var sut = assertDoesNotThrow(() -> new WrongNumberException(number),
             "Der Konstruktor von WrongNumberException wirft eine unerwartete Exception.");
 
-        // This allows scientific notation (44e2), regular notation (4400) and leaving out leading zeros (.12)
-        // A bit more tolerant towards different student solutions than comparing the strings directly
-        // TODO: tolerate both point (.) and comma (,) as decimal separator
-        var actualDoubleValue = Double.parseDouble(sut.getMessage());
-
-        assertEquals(number, actualDoubleValue, "Die Botschaft der WrongNumberException wird nicht korrekt gesetzt.");
+        assertEquals(number + "", sut.getMessage(), "Die Botschaft der WrongNumberException wird nicht korrekt gesetzt.");
     }
 
     // DONE
