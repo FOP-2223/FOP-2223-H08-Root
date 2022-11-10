@@ -186,7 +186,6 @@ public class TutorTests_H3_1 {
 
     // TODO: check that constructors of exceptions are called with the correct parameters, but without checking the message
     //  that is set (use byte code transformer to check constructor call)
-    // TODO: check throws-clauses and that they specify the exact exception instead of just Exception
 
     public class CT implements ClassTransformer {
         private final String methodName;
