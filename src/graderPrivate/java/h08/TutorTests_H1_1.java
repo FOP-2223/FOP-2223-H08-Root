@@ -1,7 +1,7 @@
 package h08;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import h08.calculation.ArrayCalculatorWithPreconditions;
+import h08.calculation.ArrayCalculatorWithRuntimeExceptions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,7 +24,7 @@ public class TutorTests_H1_1 {
         var converter = new ArrayNodeConverter(testArrayNode);
         var testArray = converter.convert();
 
-        var sut = new ArrayCalculatorWithPreconditions();
+        var sut = new ArrayCalculatorWithRuntimeExceptions();
         var actual = assertDoesNotThrow(() -> sut.addUp(testArray, Double.MAX_VALUE),
             "Die Funktion addUp wirft bei korrekten Eingabewerten eine unerwartete Exception.");
         assertEquals(expectedSum, actual, "Die Funktion addUp berechnet die Summe nicht korrekt.");
