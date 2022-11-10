@@ -187,7 +187,7 @@ public class TutorTests_H3_1 {
     // TODO: check that constructors of exceptions are called with the correct parameters, but without checking the message
     //  that is set (use byte code transformer to check constructor call)
 
-    public class CT implements ClassTransformer {
+    public static class CT implements ClassTransformer {
         private final String methodName;
         private final String descriptor;
         private final String expectedException;
@@ -204,7 +204,7 @@ public class TutorTests_H3_1 {
         }
 
         @Override
-        public void transform(final ClassReader reader, final ClassWriter writer) {
+        public void transform(@NotNull final ClassReader reader, final ClassWriter writer) {
             reader.accept(new CV(methodName, descriptor, expectedException), 0);
         }
 
