@@ -9,14 +9,25 @@ import h08.preconditions.WrongNumberException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.ClassTransformer;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestForSubmission
 @DisplayName("H3.1")
@@ -124,6 +135,15 @@ public class TutorTests_H3_1 {
             "Die Methode checkNumberNotNegative wirft eine unerwartete Exception.");
     }
 
+    // DONE
+    @Test
+    @DisplayName("Methode \"checkNumberNotNegative\" deklariert eine WrongNumberException mittels throws-Klausel.")
+    @ExtendWith(TestCycleResolver.class)
+    public void checkNumberNotNegativeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
+        testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
+            new CT("checkNumberNotNegative", "(D)V", "h08/preconditions/WrongNumberException"));
+    }
+
     // checkValuesInRange
 
     // DONE
@@ -155,8 +175,69 @@ public class TutorTests_H3_1 {
             "Die Methode checkValuesInRange wirft eine unerwartete Exception.");
     }
 
+    // DONE
+    @Test
+    @DisplayName("Methode \"checkValuesInRange\" deklariert eine AtIndexPairException mittels throws-Klausel.")
+    @ExtendWith(TestCycleResolver.class)
+    public void checkValuesInRangeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
+        testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
+            new CT("checkValuesInRange", "([[DD)V", "h08/preconditions/AtIndexPairException"));
+    }
+
     // TODO: check that constructors of exceptions are called with the correct parameters, but without checking the message
     //  that is set (use byte code transformer to check constructor call)
     // TODO: check throws-clauses and that they specify the exact exception instead of just Exception
 
+    public class CT implements ClassTransformer {
+        private final String methodName;
+        private final String descriptor;
+        private final String expectedException;
+
+        public CT(String methodName, String descriptor, String expectedException) {
+            this.methodName = methodName;
+            this.descriptor = descriptor;
+            this.expectedException = expectedException;
+        }
+
+        @Override
+        public String getName() {
+            return "H3_1-transformer";
+        }
+
+        @Override
+        public void transform(final ClassReader reader, final ClassWriter writer) {
+            reader.accept(new CV(methodName, descriptor, expectedException), 0);
+        }
+
+        private static class CV extends ClassVisitor {
+            private final String methodName;
+            private final String descriptor;
+            private final String expectedException;
+
+            protected CV(String methodName, String descriptor, String expectedException) {
+                super(Opcodes.ASM9);
+                this.methodName = methodName;
+                this.descriptor = descriptor;
+                this.expectedException = expectedException;
+            }
+
+            @Override
+            public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                if (methodName.equals(name) && this.descriptor.equals(descriptor)) {
+                    var message = String.format(
+                        "Die Methode %s muss eine %s mittels genau einer throws-Klausel deklarieren.",
+                        methodName,
+                        expectedException);
+
+                    if (exceptions == null || exceptions.length != 1) {
+                        fail(message);
+                    }
+
+                    assertEquals(expectedException, exceptions[0], message);
+                }
+
+                return super.visitMethod(access, name, descriptor, signature, exceptions);
+            }
+        }
+    }
 }

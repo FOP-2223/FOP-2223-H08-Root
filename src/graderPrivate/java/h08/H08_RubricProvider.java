@@ -26,17 +26,8 @@ public class H08_RubricProvider implements RubricProvider {
 //        .addChildCriteria(H2_T1)
 //        .build();
 //
-//    public static final Criterion H3_1 = Criterion.builder()
-//        .shortDescription("H3.1 | Die Klasse Preconditions")
-//        .build();
-//
 //    public static final Criterion H3_2 = Criterion.builder()
 //        .shortDescription("H3.2 | Verwendung des Preconditions-Frameworks")
-//        .build();
-//
-//    public static final Criterion H3 = Criterion.builder()
-//        .shortDescription("H1 | Eigenes Preconditions-Framework")
-//        .addChildCriteria(H3_1, H3_2)
 //        .build();
 
     @Override
@@ -54,6 +45,20 @@ public class H08_RubricProvider implements RubricProvider {
         var H1_2 = new ChildCollectionCriterionBuilder("H1.2 | Prüfen der Ausnahmefälle", H1_2_T1);
 
         var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1, H1_2);
+
+        var H3_1_T1 = new OnePointCriterionBuilder("Die Methode \"checkNumberNotNegative\" " +
+            "deklariert eine WrongNumberException mittels throws-Klausel.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkNumberNotNegativeDeclaresThrowsClause", TestCycle.class)));
+
+        var H3_1_T2 = new OnePointCriterionBuilder("Die Methode \"checkValuesInRange\" " +
+            "deklariert eine AtIndexException mittels throws-Klausel.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkValuesInRangeDeclaresThrowsClause", TestCycle.class)));
+
+        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2);
+
+        var H3 = new ChildCollectionCriterionBuilder("H3 | Eigenes Preconditions-Framework", H3_1);
 
         var H4_T1 = new OnePointCriterionBuilder("Die Methode \"print\" gibt bei korrekter Eingabe die Summe aus.",
             JUnitTestRef.ofMethod(() ->
@@ -92,7 +97,7 @@ public class H08_RubricProvider implements RubricProvider {
         // H5 DONE
         var H5 = new ChildCollectionCriterionBuilder("H5 | Tests mit JUnit", H5_1, H5_2);
 
-        var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1, H4, H5);
+        var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1, H3, H4, H5);
         return rubricBuilder.build();
     }
 }
