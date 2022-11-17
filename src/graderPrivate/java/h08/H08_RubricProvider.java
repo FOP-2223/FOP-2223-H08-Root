@@ -25,10 +25,6 @@ public class H08_RubricProvider implements RubricProvider {
 //        .shortDescription("H2 | Eigene Exception-Klassen")
 //        .addChildCriteria(H2_T1)
 //        .build();
-//
-//    public static final Criterion H3_2 = Criterion.builder()
-//        .shortDescription("H3.2 | Verwendung des Preconditions-Frameworks")
-//        .build();
 
     @Override
     public Rubric getRubric() {
@@ -58,7 +54,13 @@ public class H08_RubricProvider implements RubricProvider {
 
         var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2);
 
-        var H3 = new ChildCollectionCriterionBuilder("H3 | Eigenes Preconditions-Framework", H3_1);
+        var H3_2_T1 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten Ausnahmefall abzuprüfen.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_2.class.getMethod("addUpHandlesNullPrimaryArrayCorrectly", TestCycle.class)));
+
+        var H3_2 = new ChildCollectionCriterionBuilder("H3.2 | Verwendung des Preconditions-Frameworks", H3_2_T1);
+
+        var H3 = new ChildCollectionCriterionBuilder("H3 | Eigenes Preconditions-Framework", H3_1, H3_2);
 
         var H4_T1 = new OnePointCriterionBuilder("Die Methode \"print\" gibt bei korrekter Eingabe die Summe aus.",
             JUnitTestRef.ofMethod(() ->
