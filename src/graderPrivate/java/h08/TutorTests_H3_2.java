@@ -2,10 +2,11 @@ package h08;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import h08.calculation.ArrayCalculatorWithPreconditions;
+import h08.preconditions.AtIndexPairException;
+import h08.preconditions.WrongNumberException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
@@ -16,11 +17,12 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
-import org.sourcegrade.jagr.api.testing.TestCycle;
-import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestForSubmission
 @DisplayName("H3.2")
@@ -42,10 +44,22 @@ public class TutorTests_H3_2 {
 
     @Test
     @DisplayName("Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten Ausnahmefall abzuprüfen.")
-    @ExtendWith(TestCycleResolver.class)
-    public void addUpHandlesNullPrimaryArrayCorrectly(@NotNull TestCycle testCycle) {
-        testCycle.getClassLoader().visitClass(ArrayCalculatorWithPreconditions.class.getName(),
-            new CT("checkValuesInRange", "([[DD)V", "h08/preconditions/AtIndexPairException"));
+    public void addUpHandlesNullPrimaryArrayCorrectly() {
+        MockPreconditions.reset();
+
+        var testArray = new double[][]{
+            {2344, 12313},
+            {6384}
+        };
+
+        var sut = new ArrayCalculatorWithPreconditions();
+        try {
+            sut.addUp(testArray, 42);
+        } catch (Exception ignored) {
+        }
+
+        assertTrue(MockPreconditions.CheckPrimaryArrayNotNullInvocations.stream().anyMatch(i -> Arrays.deepEquals(i.primaryArray(), testArray)),
+            "Die Methode addUp verwendet die Preconditions-Klasse nicht, um zu prüfen, ob der primary array null ist.");
     }
 
     public static class CT implements ClassTransformer {

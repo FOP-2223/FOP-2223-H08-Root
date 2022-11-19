@@ -1,12 +1,15 @@
 package h08;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import h08.preconditions.Preconditions;
 import h08.utils.ChildCollectionCriterionBuilder;
 import h08.utils.OnePointCriterionBuilder;
 import h08.utils.RubricBuilder;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import org.sourcegrade.jagr.api.testing.ClassTransformer;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 
 public class H08_RubricProvider implements RubricProvider {
@@ -54,9 +57,10 @@ public class H08_RubricProvider implements RubricProvider {
 
         var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2);
 
-        var H3_2_T1 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten Ausnahmefall abzuprüfen.",
+        var H3_2_T1 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten " +
+            "Ausnahmefall abzuprüfen.",
             JUnitTestRef.ofMethod(() ->
-                TutorTests_H3_2.class.getMethod("addUpHandlesNullPrimaryArrayCorrectly", TestCycle.class)));
+                TutorTests_H3_2.class.getMethod("addUpHandlesNullPrimaryArrayCorrectly")));
 
         var H3_2 = new ChildCollectionCriterionBuilder("H3.2 | Verwendung des Preconditions-Frameworks", H3_2_T1);
 
@@ -101,5 +105,11 @@ public class H08_RubricProvider implements RubricProvider {
 
         var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1, H3, H4, H5);
         return rubricBuilder.build();
+    }
+
+    @Override
+    public void configure(RubricConfiguration configuration) {
+        RubricProvider.super.configure(configuration);
+        configuration.addTransformer(ClassTransformer.replacement(MockPreconditions.class, Preconditions.class));
     }
 }
