@@ -3,7 +3,6 @@ package h08;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import h08.calculation.ArrayCalculatorWithPreconditions;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,12 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestForSubmission
 @DisplayName("H3.2")
 public class TutorTests_H3_2 {
-    @BeforeEach
-    public static void setupEach() {
-        MockPreconditions.reset();
-        MockPreconditions.forwardInvocations = false;
-    }
-
     // DONE
     @ParameterizedTest
     @DisplayName("Methode \"addUp\" berechnet die Summe korrekt.")
@@ -44,6 +37,9 @@ public class TutorTests_H3_2 {
     @Test
     @DisplayName("Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten Ausnahmefall abzuprüfen.")
     public void addUpHandlesNullPrimaryArrayCorrectly() {
+        MockPreconditions.reset();
+        MockPreconditions.forwardInvocations = false;
+
         var testArray = new double[][]{
             {2344, 12313},
             {6384}
