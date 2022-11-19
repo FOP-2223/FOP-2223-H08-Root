@@ -25,14 +25,14 @@ public class MockPreconditions {
     public static final List<CheckNumberNotNegativeInvocation> CheckNumberNotNegativeInvocations = new ArrayList<>();
     public static final List<CheckValuesInRangeInvocation> CheckValuesInRangeInvocations = new ArrayList<>();
 
-    public static boolean forwardInvocations;
+    public static boolean forwardInvocations = true;
 
     public static void reset() {
         CheckPrimaryArrayNotNullInvocations.clear();
         CheckSecondaryArrayNotNullInvocations.clear();
         CheckNumberNotNegativeInvocations.clear();
         CheckValuesInRangeInvocations.clear();
-        forwardInvocations = false;
+        forwardInvocations = true;
     }
 
     public static void checkPrimaryArrayNotNull(double[][] primaryArray) {

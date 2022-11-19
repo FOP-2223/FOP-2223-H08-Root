@@ -7,6 +7,7 @@ import h08.preconditions.AtIndexPairException;
 import h08.preconditions.Preconditions;
 import h08.preconditions.WrongNumberException;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 @TestForSubmission
 @DisplayName("H3.1")
 public class TutorTests_H3_1 {
+    @BeforeAll
+    public static void setup() {
+        MockPreconditions.reset();
+    }
+
     // checkPrimaryArrayNotNull
 
     // DONE
