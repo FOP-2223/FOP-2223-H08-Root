@@ -45,24 +45,46 @@ public class H08_RubricProvider implements RubricProvider {
 
         var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1, H1_2);
 
-        var H3_1_T1 = new OnePointCriterionBuilder("Die Methode \"checkNumberNotNegative\" " +
+        var H3_1_T1 = new OnePointCriterionBuilder("Die Methode \"checkPrimaryArrayNotNull\" wirft keine ArrayIsNullException, " +
+            "wenn" +
+            " der Hauptarray nicht null ist.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkPrimaryArrayNotNullHandlesRegularCaseCorrectly1", ArrayNode.class)));
+
+        var H3_1_T2 = new OnePointCriterionBuilder("Die Methode \"checkNumberNotNegative\" " +
             "deklariert eine WrongNumberException mittels throws-Klausel.",
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_1.class.getMethod("checkNumberNotNegativeDeclaresThrowsClause", TestCycle.class)));
 
-        var H3_1_T2 = new OnePointCriterionBuilder("Die Methode \"checkValuesInRange\" " +
+        var H3_1_T3 = new OnePointCriterionBuilder("Die Methode \"checkValuesInRange\" " +
             "deklariert eine AtIndexException mittels throws-Klausel.",
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_1.class.getMethod("checkValuesInRangeDeclaresThrowsClause", TestCycle.class)));
 
-        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2);
+        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2, H3_1_T3);
 
-        var H3_2_T1 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten " +
+        var H3_2_T2 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten " +
             "Ausnahmefall abzuprüfen.",
             JUnitTestRef.ofMethod(() ->
-                TutorTests_H3_2.class.getMethod("addUpHandlesNullPrimaryArrayCorrectly")));
+                TutorTests_H3_2.class.getMethod("addUpHandlesFirstCaseCorrectly")));
 
-        var H3_2 = new ChildCollectionCriterionBuilder("H3.2 | Verwendung des Preconditions-Frameworks", H3_2_T1);
+        var H3_2_T3 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den zweiten " +
+            "Ausnahmefall abzuprüfen.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_2.class.getMethod("addUpHandlesSecondCaseCorrectly")));
+
+        var H3_2_T4 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den dritten " +
+            "Ausnahmefall abzuprüfen.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_2.class.getMethod("addUpHandlesThirdCaseCorrectly")));
+
+        var H3_2_T5 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den vierten " +
+            "Ausnahmefall abzuprüfen.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_2.class.getMethod("addUpHandlesFourthCaseCorrectly")));
+
+        var H3_2 = new ChildCollectionCriterionBuilder("H3.2 | Verwendung des Preconditions-Frameworks",
+            H3_2_T2, H3_2_T3, H3_2_T4, H3_2_T5);
 
         var H3 = new ChildCollectionCriterionBuilder("H3 | Eigenes Preconditions-Framework", H3_1, H3_2);
 

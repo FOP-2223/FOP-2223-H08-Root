@@ -14,7 +14,7 @@ public class MockPreconditions {
     public record CheckSecondaryArrayNotNullInvocation(double[][] primaryArray) {
     }
 
-    public record CheckNumberNotNegativeInvocation(double umber) {
+    public record CheckNumberNotNegativeInvocation(double number) {
     }
 
     public record CheckValuesInRangeInvocation(double[][] primaryArray, double max) {
