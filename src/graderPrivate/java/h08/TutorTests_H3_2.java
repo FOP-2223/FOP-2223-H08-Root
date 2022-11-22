@@ -5,10 +5,12 @@ import h08.calculation.ArrayCalculatorWithPreconditions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 
 import java.util.Arrays;
 
@@ -16,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// TODO: check order of calls of preconditions methods
+// TODO: check throws clauses
 @TestForSubmission
 @DisplayName("H3.2")
 public class TutorTests_H3_2 {
@@ -37,6 +39,7 @@ public class TutorTests_H3_2 {
 
     // DONE
     @Test
+    @ExtendWith(JagrExecutionCondition.class)
     @DisplayName("Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten Ausnahmefall abzuprüfen.")
     public void addUpHandlesFirstCaseCorrectly() {
         MockPreconditions.reset();
@@ -53,13 +56,20 @@ public class TutorTests_H3_2 {
         } catch (Exception ignored) {
         }
 
-        assertTrue(MockPreconditions.CheckPrimaryArrayNotNullInvocations.stream().anyMatch(i -> Arrays.deepEquals(i
-                .primaryArray(), testArray)),
-            "Die Methode addUp verwendet die Preconditions-Klasse nicht, um zu prüfen, ob der primary array null ist.");
+        var call =
+            MockPreconditions.CheckPrimaryArrayNotNullInvocations.stream()
+                .filter(i -> Arrays.deepEquals(testArray, i.primaryArray())).findFirst();
+
+        assertTrue(call.isPresent(),
+            "Die Methode addUp ruft CheckPrimaryArrayNotNull nicht korrekt auf.");
+
+        assertEquals(0, call.get().index(),
+            "Die Methode addUp ruft CheckPrimaryArrayNotNull zu spät auf.");
     }
 
     // DONE
     @Test
+    @ExtendWith(JagrExecutionCondition.class)
     @DisplayName("Methode \"addUp\" verwendet die Preconditions-Klasse, um den zweiten Ausnahmefall abzuprüfen.")
     public void addUpHandlesSecondCaseCorrectly() {
         MockPreconditions.reset();
@@ -76,13 +86,20 @@ public class TutorTests_H3_2 {
         } catch (Exception ignored) {
         }
 
-        assertTrue(MockPreconditions.CheckSecondaryArrayNotNullInvocations.stream().anyMatch(i -> Arrays.deepEquals(i
-                .primaryArray(), testArray)),
-            "Die Methode addUp verwendet die Preconditions-Klasse nicht, um zu prüfen, ob ein secondary array null ist.");
+        var call =
+            MockPreconditions.CheckSecondaryArrayNotNullInvocations.stream()
+                .filter(i -> Arrays.deepEquals(testArray, i.primaryArray())).findFirst();
+
+        assertTrue(call.isPresent(),
+            "Die Methode addUp ruft CheckSecondaryArrayNotNull nicht korrekt auf.");
+
+        assertEquals(1, call.get().index(),
+            "Die Methode addUp ruft CheckSecondaryArrayNotNull zu früh oder zu spät auf.");
     }
 
     // DONE
     @Test
+    @ExtendWith(JagrExecutionCondition.class)
     @DisplayName("Methode \"addUp\" verwendet die Preconditions-Klasse, um den dritten Ausnahmefall abzuprüfen.")
     public void addUpHandlesThirdCaseCorrectly() {
         MockPreconditions.reset();
@@ -93,18 +110,28 @@ public class TutorTests_H3_2 {
             {6384}
         };
 
+        final double max = 634234;
+
         var sut = new ArrayCalculatorWithPreconditions();
         try {
-            sut.addUp(testArray, 634234);
+            sut.addUp(testArray, max);
         } catch (Exception ignored) {
         }
 
-        assertTrue(MockPreconditions.CheckNumberNotNegativeInvocations.stream().anyMatch(i -> i.number() == 634234),
-            "Die Methode addUp verwendet die Preconditions-Klasse nicht, um zu prüfen, ob max negativ ist.");
+        var call =
+            MockPreconditions.CheckNumberNotNegativeInvocations.stream()
+                .filter(i -> i.number() == max).findFirst();
+
+        assertTrue(call.isPresent(),
+            "Die Methode addUp ruft CheckNumberNotNegative nicht korrekt auf.");
+
+        assertEquals(2, call.get().index(),
+            "Die Methode addUp ruft CheckNumberNotNegative zu früh oder zu spät auf.");
     }
 
-    // DONE
+    // TODO: Order
     @Test
+    @ExtendWith(JagrExecutionCondition.class)
     @DisplayName("Methode \"addUp\" verwendet die Preconditions-Klasse, um den vierten Ausnahmefall abzuprüfen.")
     public void addUpHandlesFourthCaseCorrectly() {
         MockPreconditions.reset();
@@ -115,15 +142,22 @@ public class TutorTests_H3_2 {
             {6384}
         };
 
+        final double max = 634234;
+
         var sut = new ArrayCalculatorWithPreconditions();
         try {
-            sut.addUp(testArray, 634234);
+            sut.addUp(testArray, max);
         } catch (Exception ignored) {
         }
 
-        assertTrue(MockPreconditions.CheckValuesInRangeInvocations.stream().anyMatch(
-                i -> Arrays.deepEquals(i.primaryArray(), testArray) && i.max() == 634234),
-            "Die Methode addUp verwendet die Preconditions-Klasse nicht, um zu prüfen, ob alle Werte im gültigen Bereich liegen" +
-                ".");
+        var call =
+            MockPreconditions.CheckValuesInRangeInvocations.stream()
+                .filter(i -> Arrays.deepEquals(i.primaryArray(), testArray) && i.max() == max).findFirst();
+
+        assertTrue(call.isPresent(),
+            "Die Methode addUp ruft CheckValuesInRange nicht korrekt auf.");
+
+        assertEquals(3, call.get().index(),
+            "Die Methode addUp ruft CheckValuesInRange zu früh oder zu spät auf.");
     }
 }
