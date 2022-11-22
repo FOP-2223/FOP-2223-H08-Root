@@ -133,5 +133,6 @@ public class H08_RubricProvider implements RubricProvider {
     public void configure(RubricConfiguration configuration) {
         RubricProvider.super.configure(configuration);
         configuration.addTransformer(ClassTransformer.replacement(MockPreconditions.class, Preconditions.class));
+        configuration.addTransformer(new ArrayCalculatorCtorReplacer());
     }
 }

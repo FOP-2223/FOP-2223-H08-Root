@@ -1,6 +1,5 @@
 package h08;
 
-import h08.transform.MainTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +36,7 @@ public class TutorTests_H4 {
     @DisplayName("Methode \"print\" gibt bei korrekter Eingabe die Summe aus.")
     @ExtendWith(TestCycleResolver.class)
     public void printOutputsSumForCorrectParameters(@NotNull TestCycle testCycle) {
-        testCycle.getClassLoader().visitClass("h08.Main", new MainTransformer());
+        testCycle.getClassLoader().visitClass(Main.class.getName(), new ArrayCalculatorCtorReplacer());
 
         Main.print(new double[0][], 0);
 

@@ -1,5 +1,6 @@
-package h08.transform;
+package h08;
 
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -7,46 +8,43 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
-public class MainTransformer implements ClassTransformer {
+public class ArrayCalculatorCtorReplacer implements ClassTransformer {
     @Override
     public String getName() {
-        return "Main-transformer";
+        return "ArrayCalculatorCtorReplacer";
     }
 
     @Override
-    public void transform(final ClassReader reader, final ClassWriter writer) {
-        reader.accept(new CV(writer), 0);
+    public void transform(@NotNull ClassReader reader, ClassWriter writer) {
+        if ("h08/Main".equals(reader.getClassName())) {
+            reader.accept(new CV(writer), 0);
+        }
     }
 
     private static class CV extends ClassVisitor {
-        private final ClassWriter writer;
-
-        protected CV(ClassWriter writer) {
-            super(Opcodes.ASM9, writer);
-            this.writer = writer;
+        public CV(ClassVisitor classVisitor) {
+            super(Opcodes.ASM9, classVisitor);
         }
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
             if ("print".equals(name) && "([[DD)V".equals(descriptor)) {
-                return new MV(null);
+                return new MV(super.visitMethod(access, name, descriptor, signature, exceptions));
             }
-
             return super.visitMethod(access, name, descriptor, signature, exceptions);
         }
 
         private static class MV extends MethodVisitor {
-            private final ClassWriter writer;
 
-            protected MV(ClassWriter writer) {
-                super(Opcodes.ASM9);
-                this.writer = writer;
+            protected MV(MethodVisitor methodVisitor) {
+                super(Opcodes.ASM9, methodVisitor);
             }
 
             @Override
             public void visitTypeInsn(int opcode, String type) {
+                // replace creation of new instance
                 if (opcode == Opcodes.NEW && "h08/calculation/ArrayCalculatorWithPreconditions".equals(type)) {
-                    super.visitTypeInsn(opcode, "h08/calculation/ArrayCalculatorWithRuntimeExceptions");
+                    super.visitTypeInsn(opcode, "h08/MockArrayCalculatorWithPreconditions");
                 } else {
                     super.visitTypeInsn(opcode, type);
                 }
@@ -54,10 +52,12 @@ public class MainTransformer implements ClassTransformer {
 
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                if (opcode == Opcodes.INVOKESPECIAL && "h08/calculation/ArrayCalculatorWithPreconditions".equals(owner) &&
-                    "<init>".equals(name) && "()V".equals(descriptor) && !isInterface) {
-                    super.visitMethodInsn(opcode, "h08/calculation/ArrayCalculatorWithRuntimeExceptions", name, descriptor,
-                        isInterface);
+                // replace constructor invocation
+                if (opcode == Opcodes.INVOKESPECIAL
+                    && "h08/calculation/ArrayCalculatorWithPreconditions".equals(owner)
+                    && "<init>".equals(name)
+                    && "()V".equals(descriptor)) {
+                    super.visitMethodInsn(opcode, "h08/MockArrayCalculatorWithPreconditions", name, descriptor, isInterface);
                 } else {
                     super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
                 }
