@@ -83,8 +83,13 @@ public class H08_RubricProvider implements RubricProvider {
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_2.class.getMethod("addUpHandlesFourthCaseCorrectly")));
 
+        var H3_2_T6 = new OnePointCriterionBuilder("Die Methode \"addUp\" deklariert eine WrongNumberException und eine " +
+            "AtIndexPairException mittels throws-Klausel.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_2.class.getMethod("checkAddUpDeclaresThrowsClauses", TestCycle.class)));
+
         var H3_2 = new ChildCollectionCriterionBuilder("H3.2 | Verwendung des Preconditions-Frameworks",
-            H3_2_T2, H3_2_T3, H3_2_T4, H3_2_T5);
+            H3_2_T2, H3_2_T3, H3_2_T4, H3_2_T5, H3_2_T6);
 
         var H3 = new ChildCollectionCriterionBuilder("H3 | Eigenes Preconditions-Framework", H3_1, H3_2);
 

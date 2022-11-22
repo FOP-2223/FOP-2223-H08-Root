@@ -1,7 +1,5 @@
 package h08.calculation;
 
-import h08.preconditions.ArrayIsNullException;
-import h08.preconditions.AtIndexException;
 import h08.preconditions.AtIndexPairException;
 import h08.preconditions.Preconditions;
 import h08.preconditions.WrongNumberException;
@@ -15,11 +13,11 @@ public class ArrayCalculatorWithPreconditions implements ArrayCalculator {
      * @param theArray The primary array containing the secondary arrays with their
      *                 double values.
      * @return double The sum of all double values contained on all secondary
-     *                arrays.
+     * arrays.
      */
     @Override
     public double addUp(double[][] theArray, double max)
-        throws ArrayIsNullException, AtIndexException, WrongNumberException, AtIndexPairException {
+        throws WrongNumberException, AtIndexPairException {
         // Exceptions
 
         // 1

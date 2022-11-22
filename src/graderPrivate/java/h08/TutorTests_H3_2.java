@@ -9,8 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.ClassTransformer;
+import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.util.Arrays;
 
@@ -18,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// TODO: check throws clauses
+// DONE
 @TestForSubmission
 @DisplayName("H3.2")
 public class TutorTests_H3_2 {
@@ -129,7 +137,7 @@ public class TutorTests_H3_2 {
             "Die Methode addUp ruft CheckNumberNotNegative zu früh oder zu spät auf.");
     }
 
-    // TODO: Order
+    // DONE
     @Test
     @ExtendWith(JagrExecutionCondition.class)
     @DisplayName("Methode \"addUp\" verwendet die Preconditions-Klasse, um den vierten Ausnahmefall abzuprüfen.")
@@ -159,5 +167,44 @@ public class TutorTests_H3_2 {
 
         assertEquals(3, call.get().index(),
             "Die Methode addUp ruft CheckValuesInRange zu früh oder zu spät auf.");
+    }
+
+    // DONE
+    @Test
+    @DisplayName("Methode \"addUp\" deklariert eine WrongNumberException und eine AtIndexPairException mittels throws-Klausel.")
+    @ExtendWith(TestCycleResolver.class)
+    @ExtendWith(JagrExecutionCondition.class)
+    public void checkAddUpDeclaresThrowsClauses(@NotNull TestCycle testCycle) {
+        testCycle.getClassLoader().visitClass(ArrayCalculatorWithPreconditions.class.getName(), new CT());
+    }
+
+    public static class CT implements ClassTransformer {
+        @Override
+        public String getName() {
+            return "H3_2-transformer";
+        }
+
+        @Override
+        public void transform(@NotNull final ClassReader reader, final ClassWriter writer) {
+            reader.accept(new CV(), 0);
+        }
+
+        private static class CV extends ClassVisitor {
+            protected CV() {
+                super(Opcodes.ASM9);
+            }
+
+            @Override
+            public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                if ("addUp".equals(name) && "([[DD)D".equals(descriptor)) {
+                    assertTrue(Arrays.asList(exceptions).contains("h08/preconditions/WrongNumberException"),
+                        "Die Methode \"addUp\" deklariert keine WrongNumberException mittels throws-Klausel.");
+                    assertTrue(Arrays.asList(exceptions).contains("h08/preconditions/AtIndexPairException"),
+                        "Die Methode \"addUp\" deklariert keine AtIndexPairException mittels throws-Klausel.");
+                }
+
+                return super.visitMethod(access, name, descriptor, signature, exceptions);
+            }
+        }
     }
 }
