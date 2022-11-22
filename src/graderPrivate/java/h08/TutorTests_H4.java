@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.io.ByteArrayOutputStream;
@@ -35,6 +36,7 @@ public class TutorTests_H4 {
     @Test
     @DisplayName("Methode \"print\" gibt bei korrekter Eingabe die Summe aus.")
     @ExtendWith(TestCycleResolver.class)
+    @ExtendWith(JagrExecutionCondition.class)
     public void printOutputsSumForCorrectParameters(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(Main.class.getName(), new ArrayCalculatorCtorReplacer());
 

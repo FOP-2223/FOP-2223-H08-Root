@@ -18,6 +18,7 @@ import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,6 +97,7 @@ public class TutorTests_H1_2 {
     @Test
     @DisplayName("Methode \"addUp\" verwendet maximal 4 throw-Anweisungen.")
     @ExtendWith(TestCycleResolver.class)
+    @ExtendWith(JagrExecutionCondition.class)
     public void addUpDoesNotExceedMaximumNumberOfThrowStatements(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(ArrayCalculatorWithRuntimeExceptions.class.getName(), new Transformer());
     }

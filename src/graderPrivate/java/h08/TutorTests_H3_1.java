@@ -22,6 +22,7 @@ import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -139,6 +140,7 @@ public class TutorTests_H3_1 {
     @Test
     @DisplayName("Methode \"checkNumberNotNegative\" deklariert eine WrongNumberException mittels throws-Klausel.")
     @ExtendWith(TestCycleResolver.class)
+    @ExtendWith(JagrExecutionCondition.class)
     public void checkNumberNotNegativeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
             new CT("checkNumberNotNegative", "(D)V", "h08/preconditions/WrongNumberException"));
@@ -179,6 +181,7 @@ public class TutorTests_H3_1 {
     @Test
     @DisplayName("Methode \"checkValuesInRange\" deklariert eine AtIndexPairException mittels throws-Klausel.")
     @ExtendWith(TestCycleResolver.class)
+    @ExtendWith(JagrExecutionCondition.class)
     public void checkValuesInRangeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
             new CT("checkValuesInRange", "([[DD)V", "h08/preconditions/AtIndexPairException"));
