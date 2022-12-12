@@ -13,21 +13,36 @@ import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 
 public class H08_RubricProvider implements RubricProvider {
-//    public static final Criterion H2_T1 = Criterion.builder()
-////        .shortDescription("Klasse RobotWithOffspring ist korrekt deklariert.")
-//        .grader(
-//            Grader.testAwareBuilder()
-////                .requirePass(JUnitTestRef.ofMethod(() -> TutorTests_H2.class.getMethod(
-////                    "t01")))
-//                .pointsPassedMax()
-//                .pointsFailedMin()
-//                .build())
-//        .build();
-//
-//    public static final Criterion H2 = Criterion.builder()
-//        .shortDescription("H2 | Eigene Exception-Klassen")
-//        .addChildCriteria(H2_T1)
-//        .build();
+    /*
+     * Punktekriterien:
+     * - H1.1 1 Punkt
+     *      - Summenberechnung korrekt 1 Punkt
+     * - H1.2 2 Punkte
+     *      - je Fall 0,5 Punkte (4 Fälle insgesamt)
+     *      - mehr als 4 throw-Anweisungen verwendet: -1 Punkt
+     * - H2 4 Punkte
+     *      - je korrekt implementierte Exception-Klasse 1 Punkt (4 Klassen insgesamt)
+     * - H3.1 4 Punkte
+     *      - je korrekt implementierter Methode in der Preconditions-Klasse 1 Punkt (4 Methoden insgesamt)
+     * - H3.2 5 Punkte
+     *      - Summenberechnung korrekt 1 Punkt
+     *      - je korrekter Aufruf der Methode aus der Preconditions-Klasse 1 Punkt (4 Aufrufe insgesamt)
+     *          - Aufruf muss an der richtigen Stelle (richtige Reihenfolge) erfolgen, damit es einen Punkt gibt
+     * - H4 3 Punkte
+     *      - bei keinem Ausnahmefall wird die Summe ausgegeben 1 Punkt
+     *      - bei einer AtIndexException oder AtIndexPairException wird "Bad array: ..." ausgegeben 1 Punkt
+     *      - Bei einer WrongNumberException wird "Bad max value: ..." ausgegeben 1 Punkt
+     *      - zusätzliche throws-Klauseln: -1 Punkt
+     * - H5.1 3 Punkte
+     *      - Methode wirft AssertionError, wenn die Summe falsch berechnet wurde 1 Punkt
+     *      - Methode wirft AssertionError mit korrekter Botschaft, wenn bei der Berechnung der Summe eine Exception geworfen wird 1 Punkt
+     *      - Methode wirft keinen AssertionError, wenn die Summe korrekt berechnet wird 1 Punkt
+     * - H5.2 3 Punkte
+     *      - Methode wirft AssertionError, wenn Calculator keine Exception wirft 1 Punkt
+     *      - Methode wirft AssertionError, wenn der Datentyp der Exception nicht übereinstimmt 1 Punkt
+     *      - Methode wirft AssertionError mit korrekter Botschaft, wenn die Botschaft der Exception nicht übereinstimmt 1 Punkt
+     *      - Methode wirft AssertionError, obwohl Exception wie erwartet geworfen wird -1 Punkt
+     */
 
     @Override
     public Rubric getRubric() {
