@@ -6,6 +6,7 @@ import h08.preconditions.AtIndexException;
 import h08.preconditions.AtIndexPairException;
 import h08.preconditions.Preconditions;
 import h08.preconditions.WrongNumberException;
+import h08.transform.ParameterInterceptor;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 import org.sourcegrade.jagr.api.testing.TestCycle;
@@ -143,7 +145,7 @@ public class TutorTests_H3_1 {
     @ExtendWith(JagrExecutionCondition.class)
     public void checkNumberNotNegativeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
-            new CT("checkNumberNotNegative", "(D)V", "h08/preconditions/WrongNumberException"));
+            new ThrowsClauseCheckCT("checkNumberNotNegative", "(D)V", "h08/preconditions/WrongNumberException"));
     }
 
     // checkValuesInRange
@@ -184,18 +186,66 @@ public class TutorTests_H3_1 {
     @ExtendWith(JagrExecutionCondition.class)
     public void checkValuesInRangeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
-            new CT("checkValuesInRange", "([[DD)V", "h08/preconditions/AtIndexPairException"));
+            new ThrowsClauseCheckCT("checkValuesInRange", "([[DD)V", "h08/preconditions/AtIndexPairException"));
+    }
+
+    @Test
+    @DisplayName("Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.")
+    @ExtendWith(TestCycleResolver.class)
+    @ExtendWith(JagrExecutionCondition.class)
+    public void checkSecondaryArraysNotNullUsesCorrectParameters(@NotNull TestCycle testCycle) {
+        testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
+            new ParameterCheckCT());
     }
 
     // TODO: check that constructors of exceptions are called with the correct parameters, but without checking the message
     //  that is set (use byte code transformer to check constructor call)
 
-    public static class CT implements ClassTransformer {
+    public static class ParameterCheckCT implements ClassTransformer {
+        @Override
+        public String getName() {
+            return "H3_1-ParameterCheckCT";
+        }
+
+        @Override
+        public void transform(ClassReader reader, ClassWriter writer) {
+            reader.accept(new CV(), 0);
+        }
+
+        private static class CV extends ClassVisitor {
+            protected CV() {
+                super(Opcodes.ASM9);
+            }
+
+            @Override
+            public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                if ("checkSecondaryArraysNotNull".equals(name)) {
+                    return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                        @Override
+                        public void visitMethodInsn(int opcode, String owner, String name, String descriptor,
+                                                    boolean isInterface) {
+                            if (opcode == Opcodes.INVOKESPECIAL
+                                && owner.equals("h03/TwinRobots")
+                                && name.equals("")
+                                && descriptor.equals("(I)V")) {
+                                ParameterInterceptor interceptor = new ParameterInterceptor(this);
+                                interceptor.interceptParameters(Type.getArgumentTypes(descriptor));
+                            }
+                        }
+                    };
+                }
+
+                return super.visitMethod(access, name, descriptor, signature, exceptions);
+            }
+        }
+    }
+
+    public static class ThrowsClauseCheckCT implements ClassTransformer {
         private final String methodName;
         private final String descriptor;
         private final String expectedException;
 
-        public CT(String methodName, String descriptor, String expectedException) {
+        public ThrowsClauseCheckCT(String methodName, String descriptor, String expectedException) {
             this.methodName = methodName;
             this.descriptor = descriptor;
             this.expectedException = expectedException;
@@ -224,7 +274,8 @@ public class TutorTests_H3_1 {
             }
 
             @Override
-            public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+            public MethodVisitor visitMethod(int access, String name, String descriptor, String signature,
+                                             String[] exceptions) {
                 if (methodName.equals(name) && this.descriptor.equals(descriptor)) {
                     var message = String.format(
                         "Die Methode %s muss eine %s mittels genau einer throws-Klausel deklarieren.",
