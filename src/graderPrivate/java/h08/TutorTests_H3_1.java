@@ -219,14 +219,14 @@ public class TutorTests_H3_1 {
 
             @Override
             public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-                if ("checkSecondaryArraysNotNull".equals(name)) {
+                if ("checkSecondaryArraysNotNull".equals(name) && "([[D)V".equals(descriptor)) {
                     return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
                         @Override
                         public void visitMethodInsn(int opcode, String owner, String name, String descriptor,
                                                     boolean isInterface) {
                             if (opcode == Opcodes.INVOKESPECIAL
-                                && owner.equals("h03/TwinRobots")
-                                && name.equals("")
+                                && owner.equals("h08/preconditions/AtIndexException")
+                                && name.equals("<init>")
                                 && descriptor.equals("(I)V")) {
                                 ParameterInterceptor interceptor = new ParameterInterceptor(this);
                                 interceptor.interceptParameters(Type.getArgumentTypes(descriptor));
