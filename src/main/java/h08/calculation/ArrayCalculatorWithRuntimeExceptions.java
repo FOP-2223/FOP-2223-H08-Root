@@ -6,7 +6,9 @@ public class ArrayCalculatorWithRuntimeExceptions implements ArrayCalculator {
      * values may not be negative or bigger than max.
      *
      * @param theArray The primary array containing the secondary arrays with their
-     *                 double values.
+     *                 double values
+     * @param max      The maximum value any double value contained in the arrays may
+     *                 have
      * @return double The sum of all double values contained on all secondary
      *         arrays.
      */
