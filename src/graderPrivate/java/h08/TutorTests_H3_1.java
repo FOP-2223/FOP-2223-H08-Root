@@ -194,8 +194,15 @@ public class TutorTests_H3_1 {
     @ExtendWith(TestCycleResolver.class)
     @ExtendWith(JagrExecutionCondition.class)
     public void checkSecondaryArraysNotNullUsesCorrectParameters(@NotNull TestCycle testCycle) {
-        testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
-            new ParameterCheckCT());
+//        testCycle.getClassLoader().loadClass(Preconditions.class.getName(),
+//            new ParameterCheckCT());
+//        double[][] array = {
+//            {1.0, 2.0, 3.0},
+//            {4.0, 5.0, 6.0},
+//            {7.0, 8.0, 9.0}
+//        };
+//        Preconditions.checkSecondaryArraysNotNull(array);
+        // TODO: check here whether the parameters are correct by accessing the static attribute?
     }
 
     // TODO: check that constructors of exceptions are called with the correct parameters, but without checking the message
@@ -213,6 +220,8 @@ public class TutorTests_H3_1 {
         }
 
         private static class CV extends ClassVisitor {
+            public static Object[] Foobar;
+
             protected CV() {
                 super(Opcodes.ASM9);
             }
@@ -230,6 +239,15 @@ public class TutorTests_H3_1 {
                                 && descriptor.equals("(I)V")) {
                                 ParameterInterceptor interceptor = new ParameterInterceptor(this);
                                 interceptor.interceptParameters(Type.getArgumentTypes(descriptor));
+                                try {
+                                    var field = CV.class.getDeclaredField("Foobar");
+                                    interceptor.storeArrayRefInField(field);
+                                } catch (NoSuchFieldException e) {
+
+                                }
+
+                                super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                                var bar = 3;
                             }
                         }
                     };
