@@ -130,7 +130,7 @@ class CalculatorTests {
      * @param expectedExceptionMessage   The exact message of the expected exception being
      *                          thrown
      */
-    private void testException(ArrayCalculator sut, double[][] array, double max, Class expectedException,
+    private <T extends Throwable> void testException(ArrayCalculator sut, double[][] array, double max, Class<T> expectedException,
             String expectedExceptionMessage) {
         Throwable thrownException = assertThrowsExactly(expectedException, () -> sut.addUp(array, max));
         String actualMessage = thrownException.getMessage();
