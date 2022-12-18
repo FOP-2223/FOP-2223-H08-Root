@@ -1,12 +1,8 @@
 package h08;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import h08.preconditions.ArrayIsNullException;
-import h08.preconditions.AtIndexException;
-import h08.preconditions.AtIndexPairException;
-import h08.preconditions.Preconditions;
-import h08.preconditions.WrongNumberException;
-import h08.transform.ParameterInterceptor;
+import h08.preconditions.*;
+import h08.transform.ParameterCheckCT;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,22 +11,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.*;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.tudalgo.algoutils.tutor.general.TutorAssertions.call;
 
 @TestForSubmission
 @DisplayName("H3.1")
@@ -152,8 +141,8 @@ public class TutorTests_H3_1 {
 
     // DONE
     @ParameterizedTest
-    @DisplayName("Methode \"checkValuesInRange\" wirft eine AtIndexPairException, falls eine Komponente negativ oder größer als" +
-        " max ist.")
+    @DisplayName("Methode \"checkValuesInRange\" wirft eine AtIndexPairException, falls eine Komponente negativ oder größer als " +
+                 "max ist.")
     @JsonClasspathSource("TutorTests_H1_2-addUpHandlesValuesOutOfRangeCorrectly.json")
     public void checkValuesInRangeHandlesExceptionCaseCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode,
                                                                 @Property("max") double max) {
@@ -168,7 +157,7 @@ public class TutorTests_H3_1 {
     // DONE
     @ParameterizedTest
     @DisplayName("Methode \"checkValuesInRange\" wirft keine AtIndexPairException, falls keine Komponente negativ oder größer " +
-        "als max ist.")
+                 "als max ist.")
     @JsonClasspathSource("TutorTests_H3_1_checkValuesInRangeHandlesRegularCaseCorrectly.json")
     public void checkValuesInRangeHandlesRegularCaseCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode,
                                                               @Property("max") double max) {
@@ -191,71 +180,16 @@ public class TutorTests_H3_1 {
 
     @Test
     @DisplayName("Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.")
-    @ExtendWith(TestCycleResolver.class)
-    @ExtendWith(JagrExecutionCondition.class)
-    public void checkSecondaryArraysNotNullUsesCorrectParameters(@NotNull TestCycle testCycle) {
-//        testCycle.getClassLoader().loadClass(Preconditions.class.getName(),
-//            new ParameterCheckCT());
-//        double[][] array = {
-//            {1.0, 2.0, 3.0},
-//            {4.0, 5.0, 6.0},
-//            {7.0, 8.0, 9.0}
-//        };
-//        Preconditions.checkSecondaryArraysNotNull(array);
+    public void checkSecondaryArraysNotNullUsesCorrectParameters() {
+        double[][] array = {
+            {1.0, 2.0, 3.0},
+            {4.0, 5.0, 6.0},
+            {7.0, 8.0, 9.0},
+            null
+        };
+        ParameterCheckCT.Foobar = null;
+        call(() -> Preconditions.checkSecondaryArraysNotNull(array));
         // TODO: check here whether the parameters are correct by accessing the static attribute?
-    }
-
-    // TODO: check that constructors of exceptions are called with the correct parameters, but without checking the message
-    //  that is set (use byte code transformer to check constructor call)
-
-    public static class ParameterCheckCT implements ClassTransformer {
-        @Override
-        public String getName() {
-            return "H3_1-ParameterCheckCT";
-        }
-
-        @Override
-        public void transform(ClassReader reader, ClassWriter writer) {
-            reader.accept(new CV(), 0);
-        }
-
-        private static class CV extends ClassVisitor {
-            public static Object[] Foobar;
-
-            protected CV() {
-                super(Opcodes.ASM9);
-            }
-
-            @Override
-            public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-                if ("checkSecondaryArraysNotNull".equals(name) && "([[D)V".equals(descriptor)) {
-                    return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
-                        @Override
-                        public void visitMethodInsn(int opcode, String owner, String name, String descriptor,
-                                                    boolean isInterface) {
-                            if (opcode == Opcodes.INVOKESPECIAL
-                                && owner.equals("h08/preconditions/AtIndexException")
-                                && name.equals("<init>")
-                                && descriptor.equals("(I)V")) {
-                                ParameterInterceptor interceptor = new ParameterInterceptor(this);
-                                interceptor.interceptParameters(Type.getArgumentTypes(descriptor));
-                                try {
-                                    var field = CV.class.getDeclaredField("Foobar");
-                                    interceptor.storeArrayRefInField(field);
-                                } catch (NoSuchFieldException e) {
-
-                                }
-
-                                super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
-                                var bar = 3;
-                            }
-                        }
-                    };
-                }
-
-                return super.visitMethod(access, name, descriptor, signature, exceptions);
-            }
-        }
     }
 
     public static class ThrowsClauseCheckCT implements ClassTransformer {

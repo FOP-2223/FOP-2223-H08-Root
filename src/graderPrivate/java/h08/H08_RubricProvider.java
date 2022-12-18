@@ -2,6 +2,7 @@ package h08;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import h08.preconditions.Preconditions;
+import h08.transform.ParameterCheckCT;
 import h08.utils.ChildCollectionCriterionBuilder;
 import h08.utils.OnePointCriterionBuilder;
 import h08.utils.RubricBuilder;
@@ -78,7 +79,7 @@ public class H08_RubricProvider implements RubricProvider {
 
         var H3_1_T4 = new OnePointCriterionBuilder("Die Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.",
             JUnitTestRef.ofMethod(() ->
-                TutorTests_H3_1.class.getMethod("checkSecondaryArraysNotNullUsesCorrectParameters", TestCycle.class)));
+                TutorTests_H3_1.class.getMethod("checkSecondaryArraysNotNullUsesCorrectParameters")));
 
         var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2, H3_1_T3, H3_1_T4);
 
@@ -157,7 +158,7 @@ public class H08_RubricProvider implements RubricProvider {
     public void configure(RubricConfiguration configuration) {
         RubricProvider.super.configure(configuration);
         configuration.addTransformer(ClassTransformer.replacement(MockPreconditions.class, Preconditions.class));
-        //configuration.addTransformer(new TutorTests_H3_1.ParameterCheckCT());
+        configuration.addTransformer(new ParameterCheckCT());
         //configuration.addTransformer(new ArrayCalculatorCtorReplacer());
     }
 }
