@@ -109,6 +109,10 @@ class CalculatorTests {
         } catch (Exception ex) {
             fail("Unexpected exception: " + ex.getMessage());
         }
+
+        // Alternative Implementierung:
+        // double actualSum = assertDoesNotThrow(() -> sut.addUp(array, max));
+        // assertEquals(expectedSum, actualSum);
     }
 
     /**

@@ -58,9 +58,10 @@ public class TutorTests_H5_1 {
             var targetException = e.getTargetException();
             if (targetException instanceof AssertionError) {
                 assertionThrown = true;
-                assertEquals("Unexpected exception: pinguin", targetException.getMessage(),
-                    "Der von der Methode \"testSum\" geworfene AssertionError " +
-                        "hat die falsche Botschaft.");
+                var message = targetException.getMessage();
+                assertTrue(message != null && message.toLowerCase().contains("pinguin"),
+                    "Die Botschaft des von der Methode \"testSum\" geworfenen AssertionError " +
+                    "beinhaltet nicht die Botschaft der unerwartet geworfenen Exception des Calculators.");
             }
         }
 
