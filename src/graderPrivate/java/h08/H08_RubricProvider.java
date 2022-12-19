@@ -73,7 +73,7 @@ public class H08_RubricProvider implements RubricProvider {
                 TutorTests_H3_1.class.getMethod("checkNumberNotNegativeDeclaresThrowsClause", TestCycle.class)));
 
         var H3_1_T3 = new OnePointCriterionBuilder("Die Methode \"checkValuesInRange\" " +
-            "deklariert eine AtIndexException mittels throws-Klausel.",
+            "deklariert eine AtIndexPairException mittels throws-Klausel.",
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_1.class.getMethod("checkValuesInRangeDeclaresThrowsClause", TestCycle.class)));
 
