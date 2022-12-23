@@ -33,10 +33,6 @@ public class TutorTests_H5_2 {
             var targetException = e.getTargetException();
             if (targetException instanceof AssertionError) {
                 assertionThrown = true;
-                var message = targetException.getMessage();
-                assertTrue(message != null && message.toLowerCase().contains("Expected h08.MockException to be thrown, but nothing was thrown.".toLowerCase()),
-                    "Die Methode \"testException\" wirft zwar einen AssertionError, verwendet jedoch die Methode " +
-                        "assertThrowsExactly nicht korrekt.");
             }
         }
 
@@ -64,10 +60,6 @@ public class TutorTests_H5_2 {
             var targetException = e.getTargetException();
             if (targetException instanceof AssertionError) {
                 assertionThrown = true;
-                var message = targetException.getMessage();
-                assertTrue(message != null && message.toLowerCase().contains("Unexpected exception type thrown, expected: <h08.MockException> but was: <h08.DifferentMockException>".toLowerCase()),
-                    "Die Methode \"testException\" wirft zwar einen AssertionError, verwendet jedoch die Methode " +
-                        "assertThrowsExactly nicht korrekt.");
             }
         }
 
