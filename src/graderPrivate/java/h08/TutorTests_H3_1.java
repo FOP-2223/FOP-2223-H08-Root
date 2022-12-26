@@ -1,7 +1,11 @@
 package h08;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import h08.preconditions.*;
+import h08.preconditions.ArrayIsNullException;
+import h08.preconditions.AtIndexException;
+import h08.preconditions.AtIndexPairException;
+import h08.preconditions.Preconditions;
+import h08.preconditions.WrongNumberException;
 import h08.transform.ParameterCheckCT;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
@@ -11,14 +15,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.tudalgo.algoutils.tutor.general.TutorAssertions.call;
 
 @TestForSubmission
@@ -106,6 +117,25 @@ public class TutorTests_H3_1 {
             "Die Methode checkSecondaryArraysNotNull wirft eine unerwartete Exception.");
     }
 
+    // DONE
+    @Test
+    @DisplayName("Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.")
+    public void checkSecondaryArraysNotNullUsesCorrectParameters() {
+        double[][] array = {
+            {1.0, 2.0, 3.0},
+            {4.0, 5.0, 6.0},
+            null,
+            {7.0, 8.0, 9.0}
+        };
+
+        ParameterCheckCT.Foobar = null;
+        call(() -> Preconditions.checkSecondaryArraysNotNull(array));
+
+        assertEquals(2, ParameterCheckCT.Foobar[0],
+            "Die Methode \"checkSecondaryArraysNotNull\" verwendet bei der Instanziierung der AtIndexPairException den falschen" +
+                " Index.");
+    }
+
     // checkNumberNotNegative
 
     // DONE
@@ -137,12 +167,31 @@ public class TutorTests_H3_1 {
             new ThrowsClauseCheckCT("checkNumberNotNegative", "(D)V", "h08/preconditions/WrongNumberException"));
     }
 
+    @Test
+    @DisplayName("Methode \"checkNumberNotNegative\" erzeugt die WrongNumberException mithilfe der korrekten Parameter.")
+    public void checkNumberNotNegativeUsesCorrectParameters() {
+        final var expectedParameter = -423421;
+        ParameterCheckCT.Foobar = null;
+        call(() -> {
+            try {
+                Preconditions.checkNumberNotNegative(expectedParameter);
+            } catch (WrongNumberException ignored) {
+                var fo = 0;
+                // We expect an exception to be thrown, but it is not relevant
+            }
+        });
+
+        assertEquals(expectedParameter, ParameterCheckCT.Foobar[0],
+            "Die Methode \"checkNumberNotNegative\" verwendet bei der Instanziierung der WrongNumberException die falsche Zahl als Parameter.");
+    }
+
     // checkValuesInRange
 
     // DONE
     @ParameterizedTest
-    @DisplayName("Methode \"checkValuesInRange\" wirft eine AtIndexPairException, falls eine Komponente negativ oder größer als " +
-                 "max ist.")
+    @DisplayName("Methode \"checkValuesInRange\" wirft eine AtIndexPairException, falls eine Komponente negativ oder größer als" +
+        " " +
+        "max ist.")
     @JsonClasspathSource("TutorTests_H1_2-addUpHandlesValuesOutOfRangeCorrectly.json")
     public void checkValuesInRangeHandlesExceptionCaseCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode,
                                                                 @Property("max") double max) {
@@ -157,7 +206,7 @@ public class TutorTests_H3_1 {
     // DONE
     @ParameterizedTest
     @DisplayName("Methode \"checkValuesInRange\" wirft keine AtIndexPairException, falls keine Komponente negativ oder größer " +
-                 "als max ist.")
+        "als max ist.")
     @JsonClasspathSource("TutorTests_H3_1_checkValuesInRangeHandlesRegularCaseCorrectly.json")
     public void checkValuesInRangeHandlesRegularCaseCorrectly(@Property("testArray") @NotNull ArrayNode testArrayNode,
                                                               @Property("max") double max) {
@@ -176,20 +225,6 @@ public class TutorTests_H3_1 {
     public void checkValuesInRangeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
             new ThrowsClauseCheckCT("checkValuesInRange", "([[DD)V", "h08/preconditions/AtIndexPairException"));
-    }
-
-    @Test
-    @DisplayName("Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.")
-    public void checkSecondaryArraysNotNullUsesCorrectParameters() {
-        double[][] array = {
-            {1.0, 2.0, 3.0},
-            {4.0, 5.0, 6.0},
-            {7.0, 8.0, 9.0},
-            null
-        };
-        ParameterCheckCT.Foobar = null;
-        call(() -> Preconditions.checkSecondaryArraysNotNull(array));
-        // TODO: check here whether the parameters are correct by accessing the static attribute?
     }
 
     public static class ThrowsClauseCheckCT implements ClassTransformer {

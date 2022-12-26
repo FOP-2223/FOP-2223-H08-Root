@@ -77,11 +77,17 @@ public class H08_RubricProvider implements RubricProvider {
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_1.class.getMethod("checkValuesInRangeDeclaresThrowsClause", TestCycle.class)));
 
-        var H3_1_T4 = new OnePointCriterionBuilder("Die Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.",
+        var H3_1_T4 = new OnePointCriterionBuilder("Die Methode \"checkSecondaryArraysNotNull\" erzeugt die " +
+            "AtIndexPairException mithilfe der korrekten Parameter.",
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_1.class.getMethod("checkSecondaryArraysNotNullUsesCorrectParameters")));
 
-        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2, H3_1_T3, H3_1_T4);
+        var H3_1_T5 = new OnePointCriterionBuilder("Die Methode \"checkNumberNotNegative\" erzeugt die WrongNumberException " +
+            "mithilfe der korrekten Parameter.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkNumberNotNegativeUsesCorrectParameters")));
+
+        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2, H3_1_T3, H3_1_T4, H3_1_T5);
 
         var H3_2_T2 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten " +
             "Ausnahmefall abzuprüfen.",
@@ -158,7 +164,17 @@ public class H08_RubricProvider implements RubricProvider {
     public void configure(RubricConfiguration configuration) {
         RubricProvider.super.configure(configuration);
         configuration.addTransformer(ClassTransformer.replacement(MockPreconditions.class, Preconditions.class));
-        configuration.addTransformer(new ParameterCheckCT());
+        configuration.addTransformer(new ParameterCheckCT(
+            "checkSecondaryArraysNotNull",
+            "([[D)V",
+            "AtIndexException",
+            "(I)V"));
+
+        configuration.addTransformer(new ParameterCheckCT(
+            "checkNumberNotNegative",
+            "(D)V",
+            "WrongNumberException",
+            "(D)V"));
         //configuration.addTransformer(new ArrayCalculatorCtorReplacer());
     }
 }
