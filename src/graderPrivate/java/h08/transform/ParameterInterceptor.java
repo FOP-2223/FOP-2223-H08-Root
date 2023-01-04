@@ -6,7 +6,23 @@ import org.objectweb.asm.Type;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.AALOAD;
+import static org.objectweb.asm.Opcodes.AASTORE;
+import static org.objectweb.asm.Opcodes.ANEWARRAY;
+import static org.objectweb.asm.Opcodes.BIPUSH;
+import static org.objectweb.asm.Opcodes.CHECKCAST;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.DUP2_X1;
+import static org.objectweb.asm.Opcodes.DUP_X1;
+import static org.objectweb.asm.Opcodes.DUP_X2;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.POP;
+import static org.objectweb.asm.Opcodes.POP2;
+import static org.objectweb.asm.Opcodes.PUTSTATIC;
+import static org.objectweb.asm.Opcodes.SWAP;
 
 /**
  * Class for intercepting parameters of method calls.
@@ -17,6 +33,7 @@ public class ParameterInterceptor {
 
     /**
      * Constructs a new {@link ParameterInterceptor} with the supplied {@link MethodVisitor}.
+     *
      * @param mv the {@link MethodVisitor}
      */
     public ParameterInterceptor(MethodVisitor mv) {
@@ -30,16 +47,26 @@ public class ParameterInterceptor {
      * After this method finishes, the array reference is at the very top of the operand stack.
      * The array reference <i>must</i> be removed before invoking the method, e.g. by storing it somewhere.
      * The elements after it are the original parameters in reverse order - as they would be right before the method invocation.
+     *
      * @param types the {@link Type} array reflecting the method's parameter types
      */
     public void interceptParameters(Type[] types) {
         mv.visitIntInsn(BIPUSH, types.length);
         mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
         for (int i = types.length - 1; i >= 0; i--) {
-            mv.visitInsn(DUP_X1);
-            mv.visitInsn(SWAP);
-            mv.visitIntInsn(BIPUSH, i);
-            mv.visitInsn(SWAP);
+            if (types[i].getDescriptor().matches("[DJ]")) {
+                mv.visitInsn(DUP_X2);
+                mv.visitInsn(DUP_X2);
+                mv.visitInsn(POP);
+                mv.visitIntInsn(BIPUSH, i);
+                mv.visitInsn(DUP_X2);
+                mv.visitInsn(POP);
+            } else {
+                mv.visitInsn(DUP_X1);
+                mv.visitInsn(SWAP);
+                mv.visitIntInsn(BIPUSH, i);
+                mv.visitInsn(SWAP);
+            }
             boxPrimitiveValue(types[i]);
             mv.visitInsn(AASTORE);
         }
@@ -48,13 +75,19 @@ public class ParameterInterceptor {
             mv.visitIntInsn(BIPUSH, i);
             mv.visitInsn(AALOAD);
             unboxPrimitiveValue(types[i]);
-            mv.visitInsn(SWAP);
+            if (types[i].getDescriptor().matches("[DJ]")) {
+                mv.visitInsn(DUP2_X1);
+                mv.visitInsn(POP2);
+            } else {
+                mv.visitInsn(SWAP);
+            }
         }
     }
 
     /**
      * Helper method to wrap primitive types in their wrapper class.
      * Reference types are ignored.
+     *
      * @param type the type of the parameter
      */
     private void boxPrimitiveValue(Type type) {
@@ -72,6 +105,7 @@ public class ParameterInterceptor {
 
     /**
      * Helper method to cast the parameter to its original type and unbox primitive types, if necessary.
+     *
      * @param type the original type of the parameter
      */
     private void unboxPrimitiveValue(Type type) {
@@ -116,6 +150,7 @@ public class ParameterInterceptor {
      * Stores the array reference using the given consumer.
      * This method needs to be called after intercepting the parameters and before invoking the original method.
      * Keep in mind that the array reference always has the type {@link Object}{@code []}.
+     *
      * @param consumer the consumer to use
      */
     public void storeArrayRef(Consumer<MethodVisitor> consumer) {
@@ -126,6 +161,7 @@ public class ParameterInterceptor {
      * Stores the array reference in the specified field.
      * This method needs to be called after intercepting the parameters and before invoking the original method.
      * Keep in mind that the array reference always has the type {@link Object}{@code []}.
+     *
      * @param owner the declaring class of the field
      * @param name  the name of the field
      */
@@ -137,6 +173,7 @@ public class ParameterInterceptor {
      * Stores the array reference in the specified field.
      * This method needs to be called after intercepting the parameters and before invoking the original method.
      * Keep in mind that the array reference always has the type {@link Object}{@code []}.
+     *
      * @param field the field
      */
     public void storeArrayRefInField(Field field) {
@@ -147,6 +184,7 @@ public class ParameterInterceptor {
      * Adds the array reference to the specified list.
      * This method needs to be called after intercepting the parameters and before invoking the original method.
      * Keep in mind that the array reference always has the type {@link Object}{@code []}.
+     *
      * @param owner the declaring class of the field
      * @param name  the name of the field
      */
@@ -163,6 +201,7 @@ public class ParameterInterceptor {
      * Add the array reference to the specified list.
      * This method needs to be called after intercepting the parameters and before invoking the original method.
      * Keep in mind that the array reference always has the type {@link Object}{@code []}.
+     *
      * @param field the field
      */
     public void storeArrayRefInList(Field field) {
