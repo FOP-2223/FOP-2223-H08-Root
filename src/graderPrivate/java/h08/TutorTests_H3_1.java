@@ -167,16 +167,16 @@ public class TutorTests_H3_1 {
             new ThrowsClauseCheckCT("checkNumberNotNegative", "(D)V", "h08/preconditions/WrongNumberException"));
     }
 
+    // DONE
     @Test
     @DisplayName("Methode \"checkNumberNotNegative\" erzeugt die WrongNumberException mithilfe der korrekten Parameter.")
     public void checkNumberNotNegativeUsesCorrectParameters() {
-        final var expectedParameter = -423421;
+        final var expectedParameter = -423421d;
         ParameterCheckCT.Foobar = null;
         call(() -> {
             try {
                 Preconditions.checkNumberNotNegative(expectedParameter);
             } catch (WrongNumberException ignored) {
-                var fo = 0;
                 // We expect an exception to be thrown, but it is not relevant
             }
         });
