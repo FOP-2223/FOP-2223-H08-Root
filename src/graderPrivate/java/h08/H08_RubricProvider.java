@@ -87,7 +87,13 @@ public class H08_RubricProvider implements RubricProvider {
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_1.class.getMethod("checkNumberNotNegativeUsesCorrectParameters")));
 
-        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2, H3_1_T3, H3_1_T4, H3_1_T5);
+        var H3_1_T6 = new OnePointCriterionBuilder("Die Methode \"checkValuesInRange\" erzeugt die AtIndexPairException " +
+            "mithilfe der korrekten Parameter.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkValuesInRangeUsesCorrectParameters")));
+
+        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse Preconditions", H3_1_T1, H3_1_T2, H3_1_T3, H3_1_T4,
+            H3_1_T5, H3_1_T6);
 
         var H3_2_T2 = new OnePointCriterionBuilder("Die Methode \"addUp\" verwendet die Preconditions-Klasse, um den ersten " +
             "Ausnahmefall abzuprüfen.",
@@ -175,6 +181,11 @@ public class H08_RubricProvider implements RubricProvider {
             "(D)V",
             "WrongNumberException",
             "(D)V"));
-        //configuration.addTransformer(new ArrayCalculatorCtorReplacer());
+
+        configuration.addTransformer(new ParameterCheckCT(
+            "checkValuesInRange",
+            "([[DD)V",
+            "AtIndexPairException",
+            "(II)V"));
     }
 }

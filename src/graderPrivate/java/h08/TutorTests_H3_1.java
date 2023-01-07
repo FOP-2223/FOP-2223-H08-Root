@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.tudalgo.algoutils.tutor.general.TutorAssertions.call;
 
+// DONE
 @TestForSubmission
 @DisplayName("H3.1")
 public class TutorTests_H3_1 {
@@ -119,7 +120,8 @@ public class TutorTests_H3_1 {
 
     // DONE
     @Test
-    @DisplayName("Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.")
+    @ExtendWith(JagrExecutionCondition.class)
+    @DisplayName("Methode \"checkSecondaryArraysNotNull\" erzeugt die AtIndexException mithilfe der korrekten Parameter.")
     public void checkSecondaryArraysNotNullUsesCorrectParameters() {
         double[][] array = {
             {1.0, 2.0, 3.0},
@@ -132,7 +134,7 @@ public class TutorTests_H3_1 {
         call(() -> Preconditions.checkSecondaryArraysNotNull(array));
 
         assertEquals(2, ParameterCheckCT.Foobar[0],
-            "Die Methode \"checkSecondaryArraysNotNull\" verwendet bei der Instanziierung der AtIndexPairException den falschen" +
+            "Die Methode \"checkSecondaryArraysNotNull\" verwendet bei der Instanziierung der AtIndexException den falschen" +
                 " Index.");
     }
 
@@ -169,6 +171,7 @@ public class TutorTests_H3_1 {
 
     // DONE
     @Test
+    @ExtendWith(JagrExecutionCondition.class)
     @DisplayName("Methode \"checkNumberNotNegative\" erzeugt die WrongNumberException mithilfe der korrekten Parameter.")
     public void checkNumberNotNegativeUsesCorrectParameters() {
         final var expectedParameter = -423421d;
@@ -182,7 +185,8 @@ public class TutorTests_H3_1 {
         });
 
         assertEquals(expectedParameter, ParameterCheckCT.Foobar[0],
-            "Die Methode \"checkNumberNotNegative\" verwendet bei der Instanziierung der WrongNumberException die falsche Zahl als Parameter.");
+            "Die Methode \"checkNumberNotNegative\" verwendet bei der Instanziierung der WrongNumberException die falsche Zahl " +
+                "als Parameter.");
     }
 
     // checkValuesInRange
@@ -225,6 +229,35 @@ public class TutorTests_H3_1 {
     public void checkValuesInRangeDeclaresThrowsClause(@NotNull TestCycle testCycle) {
         testCycle.getClassLoader().visitClass(Preconditions.class.getName(),
             new ThrowsClauseCheckCT("checkValuesInRange", "([[DD)V", "h08/preconditions/AtIndexPairException"));
+    }
+
+    // DONE
+    @Test
+    @ExtendWith(JagrExecutionCondition.class)
+    @DisplayName("Methode \"checkValuesInRange\" erzeugt die AtIndexPairException mithilfe der korrekten Parameter.")
+    public void checkValuesInRangeUsesCorrectParameters() {
+        double[][] array = {
+            {1.0, 2.0, 3.0},
+            {4.0, 5.0, 6.0},
+            {7.0, 44.0, 44.0},
+            {10.0, 11.0, 12.0},
+        };
+
+        ParameterCheckCT.Foobar = null;
+        call(() -> {
+            try {
+                Preconditions.checkValuesInRange(array, 40);
+            } catch (AtIndexPairException ignored) {
+                // We expect an exception to be thrown, but it is not relevant
+            }
+        });
+
+        assertEquals(2, ParameterCheckCT.Foobar[0],
+            "Die Methode \"checkValuesInRange\" verwendet bei der Instanziierung der AtIndexPairException den falschen" +
+                " i Index.");
+        assertEquals(1, ParameterCheckCT.Foobar[1],
+            "Die Methode \"checkValuesInRange\" verwendet bei der Instanziierung der AtIndexPairException den falschen" +
+                " j Index.");
     }
 
     public static class ThrowsClauseCheckCT implements ClassTransformer {
