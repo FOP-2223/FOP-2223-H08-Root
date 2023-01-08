@@ -10,6 +10,6 @@ public class MockArrayCalculatorWithPreconditions extends ArrayCalculatorWithPre
     @Override
     public double addUp(double[][] theArray, double max) throws ArrayIsNullException, AtIndexException, WrongNumberException,
         AtIndexPairException {
-        return super.addUp(theArray, max);
+        return 42;
     }
 }

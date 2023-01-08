@@ -42,7 +42,7 @@ public class TutorTests_H4 {
 
         Main.print(new double[0][], 0);
 
-        assertEquals("Sum: 0.0", outputStreamCaptor.toString().trim(),
+        assertEquals("Sum: 42.0", outputStreamCaptor.toString().trim(),
             "Die Ausgabe der Methode \"print\" ist bei korrekter Berechnung der Summe nicht korrekt.");
     }
 }
