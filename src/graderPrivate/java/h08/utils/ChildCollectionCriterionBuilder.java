@@ -8,7 +8,7 @@ public class ChildCollectionCriterionBuilder extends CriterionBuilder {
     private final CriterionBuilder[] builders;
 
     public ChildCollectionCriterionBuilder(String shortDescription, CriterionBuilder... builders) {
-        super(shortDescription);
+        super(codeTagify(shortDescription));
         this.builders = builders;
     }
 
