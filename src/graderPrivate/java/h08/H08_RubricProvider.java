@@ -187,5 +187,6 @@ public class H08_RubricProvider implements RubricProvider {
             "([[DD)V",
             "AtIndexPairException",
             "(II)V"));
+        //configuration.addTransformer(new ArrayCalculatorCtorReplacer());
     }
 }
