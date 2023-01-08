@@ -16,6 +16,7 @@ public class ChildCollectionCriterionBuilder extends CriterionBuilder {
     public Criterion build() {
         return builderWithShortDescription()
             .addChildCriteria(Stream.of(builders).map(CriterionBuilder::build).toArray(Criterion[]::new))
+            .minPoints(0)
             .build();
     }
 }

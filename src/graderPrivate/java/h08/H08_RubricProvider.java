@@ -55,9 +55,28 @@ public class H08_RubricProvider implements RubricProvider {
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H1_1.class.getMethod("addUpCalculatesSumCorrectly", ArrayNode.class, double.class)));
 
+        // DONE
         var H1_1 = new ChildCollectionCriterionBuilder("H1.1 | Berechnung der Summe", H1_1_T1);
 
-        var H1_2_T1 = new CriterionBuilder("Die Methode [[[addUp]]] verwendet maximal 4 [[[throw]]]-Anweisungen.") {
+        var H1_2_T1 = new OnePointCriterionBuilder("Die Methode [[[addUp]]] wirft eine korrekte NullPointerException, wenn der " +
+            "Hauptarray [[[null]]] ist oder wenn ein oder mehrere Einzelarrays [[[null]]] sind.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H1_2.class.getMethod("addUpHandlesNullPrimaryArrayCorrectly", double.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H1_2.class.getMethod("addUpHandlesNullSecondaryArrayCorrectly", ArrayNode.class, double.class,
+                    int.class)));
+
+        var H1_2_T2 = new OnePointCriterionBuilder("Die Methode [[[addUp]]] wirft eine korrekte ArithmeticException, wenn " +
+            "[[[max]]] " +
+            "negativ ist oder wenn eine Komponente negativ oder größer als [[[max]]] ist.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H1_2.class.getMethod("addUpHandlesNegativeMaxCorrectly", ArrayNode.class, double.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H1_2.class.getMethod("addUpHandlesValuesOutOfRangeCorrectly", ArrayNode.class,
+                    ExpectedIndexPair.class, double.class)));
+
+        var H1_2_T3 = new CriterionBuilder("Anforderung verletzt: Die Methode [[[addUp]]] soll maximal 4 " +
+            "[[[throw]]]-Anweisungen verwenden.") {
             @Override
             public Criterion build() {
                 return Criterion.builder()
@@ -68,16 +87,16 @@ public class H08_RubricProvider implements RubricProvider {
                         .pointsFailedMin()
                         .pointsPassedMax()
                         .build())
-                    .minPoints(0)
-                    .maxPoints(2)
+                    .minPoints(-1)
+                    .maxPoints(0)
                     .build();
             }
         };
-        //var H1_2_T2 = new UngradedCriterionBuilder("Die Methode [[[addUp]]] verwendet mehr als vier [[[throw]]]-Anweisungen
-        // .", -1, 0);
 
-        var H1_2 = new ChildCollectionCriterionBuilder("H1.2 | Prüfen der Ausnahmefälle", H1_2_T1);
+        // DONE
+        var H1_2 = new ChildCollectionCriterionBuilder("H1.2 | Prüfen der Ausnahmefälle", H1_2_T1, H1_2_T2, H1_2_T3);
 
+        // DONE
         var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1, H1_2);
 
         /*var H2 = new ChildCollectionCriterionBuilder("H2 | Eigene Exception-Klassen",
