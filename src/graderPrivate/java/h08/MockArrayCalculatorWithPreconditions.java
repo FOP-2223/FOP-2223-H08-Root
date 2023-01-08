@@ -10,6 +10,40 @@ public class MockArrayCalculatorWithPreconditions extends ArrayCalculatorWithPre
     @Override
     public double addUp(double[][] theArray, double max) throws ArrayIsNullException, AtIndexException, WrongNumberException,
         AtIndexPairException {
-        return 42;
+        if (theArray == null) {
+            throw new ArrayIsNullException();
+        }
+
+        for (int i = 0; i < theArray.length; i++) {
+            if (theArray[i] == null) {
+                throw new AtIndexException(i);
+            }
+        }
+
+        if (max < 0) {
+            throw new WrongNumberException(max);
+        }
+
+        for (int i = 0; i < theArray.length; i++) {
+            double[] secondaryArray = theArray[i];
+
+            for (int j = 0; j < secondaryArray.length; j++) {
+                double value = secondaryArray[j];
+
+                if (value < 0 || value > max) {
+                    throw new AtIndexPairException(i, j);
+                }
+            }
+        }
+
+        // Calculate sum
+        double sum = 0;
+        for (double[] secondaryArray : theArray) {
+            for (double value : secondaryArray) {
+                sum += value;
+            }
+        }
+
+        return sum;
     }
 }
