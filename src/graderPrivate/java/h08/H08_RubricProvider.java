@@ -208,27 +208,43 @@ public class H08_RubricProvider implements RubricProvider {
             "Die Methode [[[testSum]]] wirft einen AssertionError, wenn der ArrayCalculator eine Exception wirft.",
             JUnitTestRef.ofMethod(() -> TutorTests_H5_1.class.getMethod("testSumThrowsExceptionWhenCalculatorThrowsException")));
         var H5_1_T3 = new OnePointCriterionBuilder(
-            "Die Methode [[[testSum]]] wirft keine Exception, wenn der ArrayCalculator die Summe korrekt berechnet.",
+            "Die Methode [[[testSum]]] wirft keinen AssertionError, wenn der ArrayCalculator die Summe korrekt berechnet.",
             JUnitTestRef.ofMethod(() -> TutorTests_H5_1.class.getMethod("testSumPassesWhenSumCorrect")));
 
         var H5_1 = new ChildCollectionCriterionBuilder("H5.1 | Testen der Summenberechnung", H5_1_T1, H5_1_T2, H5_1_T3);
 
         var H5_2_T1 = new OnePointCriterionBuilder(
-            "Die Methode [[[testException]]] wirft einen AssertionError, wenn der ArrayCalculator keine Exception wirft oder " +
-                "Datentyp der Exception nicht dem erwarteten entspricht.",
-            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenCalculatorThrowsNoException")),
-            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenExceptionTypeIsWrong")));
+            "Die Methode [[[testException]]] wirft einen AssertionError, wenn der ArrayCalculator keine Exception wirft.",
+            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenCalculatorThrowsNoException")));
         var H5_2_T2 = new OnePointCriterionBuilder(
-            "Methode [[[testException]]] wirft einen AssertionError, wenn die Botschaft der von ArrayCalculator geworfenen " +
+            "Die Methode [[[testException]]] wirft einen AssertionError, wenn der Datentyp der vom ArrayCalculator geworfenen " +
+                "Exception nicht dem erwarteten entspricht.",
+            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenExceptionTypeIsWrong")));
+        var H5_2_T3 = new OnePointCriterionBuilder(
+            "Methode [[[testException]]] wirft einen AssertionError, wenn die Botschaft der vom ArrayCalculator geworfenen " +
                 "Exception nicht der erwarteten Botschaft entspricht.",
             JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenMessageIsWrong")));
-        var H5_2_T3 = new OnePointCriterionBuilder(
-            "Methode [[[testException]]] wirft keinen Error, wenn der ArrayCalculator eine Exception wie erwartet wirft.",
-            JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionPassesWhenExceptionIsThrownCorrectly")));
+        var H5_2_T4 = new CriterionBuilder("Die Methode [[[testException]]] darf keinen Assertion   Error werfen, wenn der ArrayCalculator " +
+            "eine Exception wie erwartet wirft.") {
+            @Override
+            public Criterion build() {
+                return Criterion.builder()
+                    .shortDescription(codeTagify(shortDescription))
+                    .grader(Grader.testAwareBuilder()
+                        .requirePass(JUnitTestRef.ofMethod(() ->
+                            TutorTests_H5_2.class.getMethod("testExceptionPassesWhenExceptionIsThrownCorrectly")))
+                        .pointsFailedMin()
+                        .pointsPassedMax()
+                        .build())
+                    .minPoints(-1)
+                    .maxPoints(0)
+                    .build();
+            }
+        };
 
-        var H5_2 = new ChildCollectionCriterionBuilder("H5.2 | Test der Ausnahmebehandlung", H5_2_T1, H5_2_T2, H5_2_T3);
+        var H5_2 = new ChildCollectionCriterionBuilder("H5.2 | Test der Ausnahmebehandlung", H5_2_T1, H5_2_T2, H5_2_T3, H5_2_T4);
 
-        // H5 DONE
+        // DONE
         var H5 = new ChildCollectionCriterionBuilder("H5 | Tests mit JUnit", H5_1, H5_2);
 
         var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1, H2, H3, H4, H5);
