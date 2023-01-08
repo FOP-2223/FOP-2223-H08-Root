@@ -55,7 +55,6 @@ public class H08_RubricProvider implements RubricProvider {
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H1_1.class.getMethod("addUpCalculatesSumCorrectly", ArrayNode.class, double.class)));
 
-        // DONE
         var H1_1 = new ChildCollectionCriterionBuilder("H1.1 | Berechnung der Summe", H1_1_T1);
 
         var H1_2_T1 = new OnePointCriterionBuilder("Die Methode [[[addUp]]] wirft eine korrekte NullPointerException, wenn der " +
@@ -93,18 +92,38 @@ public class H08_RubricProvider implements RubricProvider {
             }
         };
 
-        // DONE
         var H1_2 = new ChildCollectionCriterionBuilder("H1.2 | Prüfen der Ausnahmefälle", H1_2_T1, H1_2_T2, H1_2_T3);
 
         // DONE
         var H1 = new ChildCollectionCriterionBuilder("H1 | Methode mit RuntimeExceptions", H1_1, H1_2);
 
-        /*var H2 = new ChildCollectionCriterionBuilder("H2 | Eigene Exception-Klassen",
-            new UngradedCriterionBuilder("Klasse [[[ArrayIsNullException]]] ist korrekt implementiert."),
-            new UngradedCriterionBuilder("Klasse [[[WrongNumberException]]] ist korrekt implementiert."),
-            new UngradedCriterionBuilder("Klasse [[[AtIndexException]]] ist korrekt implementiert."),
-            new UngradedCriterionBuilder("Klasse [[[AtIndexPairException]]] ist korrekt implementiert."));
-*/
+        var H2_T1 = new OnePointCriterionBuilder("Die Klasse [[[ArrayIsNullException]]] wurde korrekt implementiert.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("arrayIsNullExceptionExtendsRuntimeException")),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("arrayIsNullExceptionConstructorSetsMessageCorrectly")));
+
+        var H2_T2 = new OnePointCriterionBuilder("Die Klasse [[[WrongNumberException]]] wurde korrekt implementiert.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("wrongNumberExceptionExtendsRuntimeException")),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("wrongNumberExceptionConstructorSetsMessageCorrectly", double.class)));
+
+        var H2_T3 = new OnePointCriterionBuilder("Die Klasse [[[AtIndexException]]] wurde korrekt implementiert.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("atIndexExceptionExtendsRuntimeException")),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("atIndexExceptionConstructorSetsMessageCorrectly", int.class)));
+
+        var H2_T4 = new OnePointCriterionBuilder("Die Klasse [[[AtIndexPairException]]] wurde korrekt implementiert.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("atIndexPairExceptionExtendsRuntimeException")),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H2.class.getMethod("atIndexPairExceptionConstructorSetsMessageCorrectly", int.class, int.class)));
+
+        // DONE
+        var H2 = new ChildCollectionCriterionBuilder("H2 | Eigene Exception-Klassen", H2_T1, H2_T2, H2_T3, H2_T4);
+
         var H3_1_T1 = new OnePointCriterionBuilder("Die Methode [[[checkPrimaryArrayNotNull]]] wirft keine " +
             "ArrayIsNullException, " +
             "wenn der Hauptarray nicht [[[null]]] ist.",
@@ -212,7 +231,7 @@ public class H08_RubricProvider implements RubricProvider {
         // H5 DONE
         var H5 = new ChildCollectionCriterionBuilder("H5 | Tests mit JUnit", H5_1, H5_2);
 
-        var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1, H3, H4, H5);
+        var rubricBuilder = new RubricBuilder("H08 | Excéptions – Gotta catch ’em all!", H1, H2, H3, H4, H5);
         return rubricBuilder.build();
     }
 
