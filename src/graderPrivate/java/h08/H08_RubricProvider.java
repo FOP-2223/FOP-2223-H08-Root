@@ -124,22 +124,47 @@ public class H08_RubricProvider implements RubricProvider {
         // DONE
         var H2 = new ChildCollectionCriterionBuilder("H2 | Eigene Exception-Klassen", H2_T1, H2_T2, H2_T3, H2_T4);
 
-        var H3_1_T1 = new OnePointCriterionBuilder("Die Methode [[[checkPrimaryArrayNotNull]]] wirft keine " +
-            "ArrayIsNullException, " +
-            "wenn der Hauptarray nicht [[[null]]] ist.",
+        var H3_1_T1 = new OnePointCriterionBuilder("Die Methode [[[checkPrimaryArrayNotNull]]] wurde korrekt implementiert.",
             JUnitTestRef.ofMethod(() ->
-                TutorTests_H3_1.class.getMethod("checkPrimaryArrayNotNullHandlesRegularCaseCorrectly1", ArrayNode.class)));
-        //var H3_1_T2 = new UngradedCriterionBuilder("Die Methode [[[checkSecondaryArraysNotNull]]] ist korrekt implementiert.");
-        var H3_1_T3 = new OnePointCriterionBuilder("Die Methode [[[checkNumberNotNegative]]] " +
-            "deklariert eine WrongNumberException mittels [[[throws]]]-Klausel.",
+                TutorTests_H3_1.class.getMethod("checkPrimaryArrayNotNullHandlesExceptionCaseCorrectly")),
             JUnitTestRef.ofMethod(() ->
-                TutorTests_H3_1.class.getMethod("checkNumberNotNegativeDeclaresThrowsClause", TestCycle.class)));
-        var H3_1_T4 = new OnePointCriterionBuilder("Die Methode [[[checkValuesInRange]]] " +
-            "deklariert eine AtIndexPairException mittels [[[throws]]]-Klausel.",
+                TutorTests_H3_1.class.getMethod("checkPrimaryArrayNotNullHandlesRegularCaseCorrectly1", ArrayNode.class)),
             JUnitTestRef.ofMethod(() ->
-                TutorTests_H3_1.class.getMethod("checkValuesInRangeDeclaresThrowsClause", TestCycle.class)));
+                TutorTests_H3_1.class.getMethod("checkPrimaryArrayNotNullHandlesRegularCaseCorrectly2", ArrayNode.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkPrimaryArrayNotNullHandlesRegularCaseCorrectly3", ArrayNode.class)));
+        var H3_1_T2 = new OnePointCriterionBuilder("Die Methode [[[checkSecondaryArraysNotNull]]] wurde korrekt implementiert.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkSecondaryArraysNotNullHandlesExceptionCaseCorrectly", ArrayNode.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkSecondaryArraysNotNullHandlesRegularCaseCorrectly1", ArrayNode.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkSecondaryArraysNotNullHandlesRegularCaseCorrectly2", ArrayNode.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkSecondaryArraysNotNullUsesCorrectParameters")));
+        var H3_1_T3 = new OnePointCriterionBuilder("Die Methode [[[checkNumberNotNegative]]] wurde korrekt implementiert.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkNumberNotNegativeHandlesExceptionCaseCorrectly", int.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkNumberNotNegativeHandlesRegularCaseCorrectly", int.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkNumberNotNegativeDeclaresThrowsClause", TestCycle.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkNumberNotNegativeUsesCorrectParameters")));
+        var H3_1_T4 = new OnePointCriterionBuilder("Die Methode [[[checkValuesInRange]]] wurde korrekt implementiert.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkValuesInRangeHandlesExceptionCaseCorrectly", ArrayNode.class,
+                    double.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkValuesInRangeHandlesRegularCaseCorrectly", ArrayNode.class, double.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkValuesInRangeDeclaresThrowsClause", TestCycle.class)),
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_1.class.getMethod("checkValuesInRangeUsesCorrectParameters")));
 
-        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse [[[Preconditions]]]", H3_1_T1, H3_1_T3, H3_1_T4);
+        // DONE
+        var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse [[[Preconditions]]]", H3_1_T1, H3_1_T2, H3_1_T3,
+            H3_1_T4);
 
         var H3_2_T2 = new OnePointCriterionBuilder("Die Methode [[[addUp]]] verwendet die Preconditions-Klasse, um den ersten " +
             "Ausnahmefall abzuprüfen.",
@@ -224,7 +249,8 @@ public class H08_RubricProvider implements RubricProvider {
             "Methode [[[testException]]] wirft einen AssertionError, wenn die Botschaft der vom ArrayCalculator geworfenen " +
                 "Exception nicht der erwarteten Botschaft entspricht.",
             JUnitTestRef.ofMethod(() -> TutorTests_H5_2.class.getMethod("testExceptionFailsWhenMessageIsWrong")));
-        var H5_2_T4 = new CriterionBuilder("Die Methode [[[testException]]] darf keinen Assertion   Error werfen, wenn der ArrayCalculator " +
+        var H5_2_T4 = new CriterionBuilder("Die Methode [[[testException]]] darf keinen Assertion   Error werfen, wenn der " +
+            "ArrayCalculator " +
             "eine Exception wie erwartet wirft.") {
             @Override
             public Criterion build() {
