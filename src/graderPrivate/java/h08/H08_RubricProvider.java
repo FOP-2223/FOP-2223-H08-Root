@@ -161,11 +161,12 @@ public class H08_RubricProvider implements RubricProvider {
                 TutorTests_H3_1.class.getMethod("checkValuesInRangeDeclaresThrowsClause", TestCycle.class)),
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_1.class.getMethod("checkValuesInRangeUsesCorrectParameters")));
-
-        // DONE
+        
         var H3_1 = new ChildCollectionCriterionBuilder("H3.1 | Die Klasse [[[Preconditions]]]", H3_1_T1, H3_1_T2, H3_1_T3,
             H3_1_T4);
-
+        var H3_2_T1 = new OnePointCriterionBuilder("Die Methode [[[addUp]]] berechnet die Summe korrekt.",
+            JUnitTestRef.ofMethod(() ->
+                TutorTests_H3_2.class.getMethod("addUpCalculatesSumCorrectly", ArrayNode.class, double.class)));
         var H3_2_T2 = new OnePointCriterionBuilder("Die Methode [[[addUp]]] verwendet die Preconditions-Klasse, um den ersten " +
             "Ausnahmefall abzuprüfen.",
             JUnitTestRef.ofMethod(() ->
@@ -182,14 +183,28 @@ public class H08_RubricProvider implements RubricProvider {
             "Ausnahmefall abzuprüfen.",
             JUnitTestRef.ofMethod(() ->
                 TutorTests_H3_2.class.getMethod("addUpHandlesFourthCaseCorrectly")));
-        var H3_2_T6 = new OnePointCriterionBuilder("Die Methode [[[addUp]]] deklariert eine WrongNumberException und eine " +
-            "AtIndexPairException mittels [[[throws]]]-Klausel.",
-            JUnitTestRef.ofMethod(() ->
-                TutorTests_H3_2.class.getMethod("checkAddUpDeclaresThrowsClauses", TestCycle.class)));
+        var H3_2_T6 = new CriterionBuilder("Anforderung verletzt: Die Methode [[[addUp]]] muss eine WrongNumberException und " +
+            "eine AtIndexPairException mittels [[[throws]]]-Klausel deklarieren.") {
+            @Override
+            public Criterion build() {
+                return Criterion.builder()
+                    .shortDescription(codeTagify(shortDescription))
+                    .grader(Grader.testAwareBuilder()
+                        .requirePass(JUnitTestRef.ofMethod(() ->
+                            TutorTests_H3_2.class.getMethod("checkAddUpDeclaresThrowsClauses", TestCycle.class)))
+                        .pointsFailedMin()
+                        .pointsPassedMax()
+                        .build())
+                    .minPoints(-1)
+                    .maxPoints(0)
+                    .build();
+            }
+        };
 
         var H3_2 = new ChildCollectionCriterionBuilder("H3.2 | Verwendung des Preconditions-Frameworks",
-            H3_2_T2, H3_2_T3, H3_2_T4, H3_2_T5, H3_2_T6);
+            H3_2_T1, H3_2_T2, H3_2_T3, H3_2_T4, H3_2_T5, H3_2_T6);
 
+        // DONE
         var H3 = new ChildCollectionCriterionBuilder("H3 | Eigenes Preconditions-Framework", H3_1, H3_2);
 
         var H4_T1 = new OnePointCriterionBuilder("Die Methode [[[print]]] gibt bei korrekter Eingabe die Summe aus.",
