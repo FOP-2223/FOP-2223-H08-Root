@@ -6,7 +6,9 @@ public class ArrayCalculatorWithRuntimeExceptions implements ArrayCalculator {
      * values may not be negative or bigger than max.
      *
      * @param theArray The primary array containing the secondary arrays with their
-     *                 double values.
+     *                 double values
+     * @param max      The maximum value any double value contained in the arrays may
+     *                 have
      * @return double The sum of all double values contained on all secondary
      *         arrays.
      */
@@ -22,7 +24,7 @@ public class ArrayCalculatorWithRuntimeExceptions implements ArrayCalculator {
         // 2
         for (int i = 0; i < theArray.length; i++) {
             if (theArray[i] == null) {
-                throw new NullPointerException("Secondary array at #" + i + " is void!");
+                throw new NullPointerException("Secondary array at " + i + " is void!");
             }
         }
 
@@ -39,7 +41,7 @@ public class ArrayCalculatorWithRuntimeExceptions implements ArrayCalculator {
                 double value = secondaryArray[j];
 
                 if (value < 0 || value > max) {
-                    throw new ArithmeticException("Value at (#" + i + ",#" + j + ") is not in range!");
+                    throw new ArithmeticException("Value at (" + i + "," + j + ") is not in range!");
                 }
             }
         }
