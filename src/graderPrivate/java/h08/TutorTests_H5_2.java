@@ -7,7 +7,6 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 

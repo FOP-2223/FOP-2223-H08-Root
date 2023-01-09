@@ -1,16 +1,13 @@
 package h08;
 
 import h08.preconditions.ArrayIsNullException;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
-import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -53,7 +50,7 @@ public class TutorTests_H4 {
             "Die Ausgabe der Methode \"print\" ist bei korrekter Berechnung der Summe nicht korrekt.");
     }
 
-     // DONE
+    // DONE
     @Test
     @ExtendWith(JagrExecutionCondition.class)
     public void printOutputsBadArrayForAtIndexException() {
@@ -69,7 +66,7 @@ public class TutorTests_H4 {
             "Die Ausgabe der Methode \"print\" ist beim Wurf einer AtIndexException nicht korrekt.");
     }
 
-     // DONE
+    // DONE
     @Test
     @ExtendWith(JagrExecutionCondition.class)
     public void printOutputsBadArrayForAtIndexPairException() {
@@ -104,6 +101,7 @@ public class TutorTests_H4 {
     @ExtendWith(JagrExecutionCondition.class)
     public void printDoesNotCatchOtherExceptions() {
         assertThrowsExactly(ArrayIsNullException.class, () -> Main.print(null, -23),
-            "Die Methode \"print\" wirft keine ArrayIsNullException, wenn die \"addUp\"-Methode des \"ArrayCalculatorWithPreconditions\"-Objekts eine ArrayIsNullException wirft.");
+            "Die Methode \"print\" wirft keine ArrayIsNullException, wenn die \"addUp\"-Methode des " +
+                "\"ArrayCalculatorWithPreconditions\"-Objekts eine ArrayIsNullException wirft.");
     }
 }
