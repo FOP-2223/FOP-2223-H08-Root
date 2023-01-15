@@ -15,14 +15,9 @@ public class ArrayCalculatorCtorReplacer implements ClassTransformer {
     }
 
     @Override
-    public int getWriterFlags() {
-        return ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
-    }
-
-    @Override
     public void transform(@NotNull ClassReader reader, ClassWriter writer) {
         if ("h08/Main".equals(reader.getClassName())) {
-            reader.accept(new CV(writer), 0);
+            reader.accept(new CV(writer), ClassReader.SKIP_DEBUG);
         } else {
             reader.accept(writer, ClassReader.SKIP_CODE);
         }
